@@ -1,0 +1,362 @@
+<!--apps page-->
+<div class="container-fluid">
+
+    <!--Global Filters-->
+    <section class="global-filters">
+        <form action="">
+            <h3 class="gf-title">Applications Filters</h3>
+            <div class="box filter-box">
+                <div class="container-fluid no-gutters">
+                    <div class="row no-gutters">
+                        <div class="filters-left col-sm-12">
+                            <div class="input-wrap selected-anim with-val">
+                                <kendo-dropdownlist name="time-range" id="time-range" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                                    [(ngModel)]="globalsService.GlobalFilter.TimeRange_Apps" [data]="globalsService.GlobalFilter.TimeRangeValues_Apps"
+                                    (valueChange)="reloadApplicationsStatistics()">
+                                </kendo-dropdownlist>
+                                <label for="time-range">Activity Time Range</label>
+                            </div>
+                            <div class="input-wrap selected-anim with-val application-name-dropdown">
+                                <kendo-dropdownlist name="application-name" id="application-name" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns application-name-dropdown"
+                                    [defaultItem]="{Code: '', Name: 'All'}" [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}"
+                                    [popupSettings]="{ width: 400 }" [(ngModel)]="globalsService.GlobalFilter.ApplicationCode_Apps"
+                                    [data]="globalsService.findGlobalSetting('FullApplicationsList',[])" [textField]="'Name'"
+                                    [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="reloadApplicationsStatistics()">
+                                </kendo-dropdownlist>
+                                <label for="application-name">Application Name</label>
+                            </div>
+
+                            <ul class="nav nav-pills filter-tabs" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <input type="radio" id="all-tabs" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType_Apps == 'All'" (change)="changeApplicationTypeFilter('All')">
+                                    <label for="all-tabs" class="nav-link"><img src="./assets/images/all-tab.svg" alt="">All
+                                    </label>
+                                </li>
+                                <li class="nav-item">
+                                    <input type="radio" id="service-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType_Apps == 'Service'"
+                                        (change)="changeApplicationTypeFilter('Service')">
+                                    <label for="service-tab" class="nav-link"><img src="./assets/images/service-tab.svg"
+                                            alt=""> Service</label>
+                                </li>
+                                <li class="nav-item">
+                                    <input type="radio" id="task-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType_Apps == 'Task'" (change)="changeApplicationTypeFilter('Task')">
+                                    <label for="task-tab" class="nav-link"><img class="task-tab-icon" src="./assets/images/task-tab.svg"
+                                            alt=""> Task
+                                    </label>
+                                </li>
+                                <li class="nav-item">
+                                    <input type="radio" id="application-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType_Apps == 'Application'"
+                                        (change)="changeApplicationTypeFilter('Application')">
+                                    <label for="application-tab" class="nav-link"><img src="./assets/images/application-tab.svg"
+                                            alt=""> Application</label>
+                                </li>
+                                <li class="nav-item">
+                                        <input type="radio" id="plugin-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType_Apps == 'Plugin'"
+                                            (change)="changeApplicationTypeFilter('Plugin')">
+                                        <label for="plugin-tab" class="nav-link"><img src="./assets/images/calendar.svg"
+                                                alt=""> Plugin</label>
+                                </li>
+                            </ul>
+
+                            <div class="checkbox-input custom-control custom-checkbox" style="margin-left: 30px;">
+                                <input type="checkbox" [(ngModel)]="globalsService.GlobalFilter.OnlineApplicationsOnly_Apps" [ngModelOptions]="{standalone: true}"
+                                    (change)="reloadApplicationsStatistics()" class="custom-control-input cursor-pointer" id="cb-online-only"
+                                    name="cb-online-only" aria-label="Checkbox for showing online apps only">
+                                <label class="custom-control-label cursor-pointer" for="cb-online-only">Online Applications</label>
+                            </div>
+
+                            <div class="checkbox-input custom-control custom-checkbox">
+                                    <input type="checkbox" [(ngModel)]="globalsService.GlobalFilter.FavoriteApplicationsOnly_Apps" [ngModelOptions]="{standalone: true}"
+                                    (change)="reloadApplicationsStatistics()" class="custom-control-input cursor-pointer" id="cb-favorite-only"
+                                        name="cb-favorite-only" aria-label="Checkbox for showing favorite apps only">
+                                    <label class="custom-control-label cursor-pointer" for="cb-favorite-only">Favorite Applications</label>
+                                </div>
+
+                            <div class="custom-control action-icons">
+                                <span title="refresh applications" class="k-icon k-i-refresh" (click)="reloadApplicationsStatistics()"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- END .container-fluid -->
+            </div><!-- END .filter-box -->
+        </form>
+    </section><!-- END .global-filters -->
+
+    <!--<nav class="breadcrumbs-nav" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/home">Home</a></li>
+          <li class="breadcrumb-item"><a routerLink="/apps">Apps</a></li>
+      </ol>
+  </nav>-->
+
+    <section class="list-page applications">
+        <div class="section-header">
+            <h3 class="title">Applications ({{ applicationsStatistics.length }})</h3>
+            <div class="inputs">
+                <!--<div class="input-wrap order-by-input">
+                  <label for="order-by">Order by</label>
+                  <select class="filter-input" name="order-by" id="order-by">
+                      <option value="Activity Level">Activity Level</option>
+                      <option value="Status">Status</option>
+                      <option value="Department">Department</option>
+                      <option value="Sessions">Sessions Date</option>
+                      <option value="Alphabetically">Alphabetically</option>
+                  </select>
+              </div>-->
+                <div class="input-wrap radio-wrap">
+                    <label>View Mode</label>
+                    <div class="mode-wrap">
+                        <input type="radio" name="view-mode" id="view-mode1" (click)="globalsService.AppsViewMode = '1'">
+                        <label class="view-mode1" for="view-mode1">
+                            <img src="./img/solid-stack.svg" alt="">
+                        </label>
+                    </div>
+                    <div class="mode-wrap">
+                        <input type="radio" name="view-mode" id="view-mode2" checked="checked" (click)="globalsService.AppsViewMode = '2'">
+                        <label class="view-mode2" for="view-mode2">
+                            <img src="./img/split-stack.svg" alt="">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- START - Advanced Fields Header - START -->
+        <!--<app-global-filter [screenName]="'apps'"></app-global-filter>-->
+        <!-- END -  Advanced Fields Header - END -->
+
+        <div class="my-app-boxes">
+            <div class="apps-view-mode1" >
+
+                <!--logic for supporting 2 columns-->
+                <div *ngFor="let idx of applicationsStatisticsIndexes ; let index=idx; let odd=odd; let last=last; let first=first ; let even=even">
+                    <!--<span [hidden]="true">row... {{idx}} odd:{{odd}} even:{{even}} first:{{first}} last:{{last}}</span>-->
+
+                    <div *ngIf="(first && last) || (even && last)" class="box-duo">
+                        <ng-container *ngTemplateOutlet="appStatisticsBox; context: {index: idx}"></ng-container>
+                    </div>
+
+                    <div *ngIf="even && !last" class="box-duo">
+                        <ng-container *ngTemplateOutlet="appStatisticsBox; context: {index: idx}"></ng-container>
+
+                        <ng-container *ngTemplateOutlet="appStatisticsBox; context: {index: (idx + 1)}"></ng-container>
+                    </div>
+
+                </div>
+            </div>
+            <div class="apps-view-mode2" style="display: none;">
+                <table class="table ecad-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-application">Application</th>
+                            <th scope="col" class="col-type">Type</th>
+                            <th scope="col" class="col-status">Status</th>
+                            <!--<th scope="col" class="col-file">File</th>-->
+                            <th scope="col" class="col-version">Version</th>
+                            <th scope="col" class="col-created">Created</th>
+                            <th scope="col" class="col-last-run">Last Run</th>
+                            <!--<th scope="col" class="col-scheduled">Scheduled</th>-->
+                            <th scope="col" class="col-configs">Configs</th>
+                            <th scope="col" class="col-runs">Runs</th>
+                            <th scope="col" class="col-users">Users</th>
+                            <th scope="col" class="col-active">Active</th>
+                            <th scope="col" class="col-errors">Errors</th>
+                            <th scope="col" class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="type-{{globalsService.fixApplicationCategoryName2(application.ApplicationCategory)}}" *ngFor="let application of applicationsStatistics">
+                            <td class="col-application">
+                                <a [routerLink]="['/app-info', application.Key]" title="Go to [{{application.ApplicationName}}] info page">
+                                    <img class="logo" src="./img/{{globalsService.fixApplicationIcon(application.ApplicationIcon, application.ApplicationCategory)}}"
+                                        alt="">
+                                    <span class="app-name">{{application.ApplicationName}}</span>
+                                </a>
+                            </td>
+                            <td class="col-type">
+                                <span class="type-box {{globalsService.fixApplicationCategoryName2(application.ApplicationCategory)}}">
+                                    <span>{{globalsService.fixApplicationCategoryName2(application.ApplicationCategory)}}</span>
+                                </span>
+                            </td>
+                            <td class="col-status">
+                                <span class="status-box {{ application.ActiveSessionsNumber > 0 ? 'online' : 'offline'}}">
+                                    <img src="./img/{{ application.ActiveSessionsNumber > 0 ? 'online' : 'offline'}}-circle.svg"><span>{{
+                                        application.ActiveSessionsNumber > 0 ? 'Online' : 'Offline'}}</span>
+                                </span>
+                            </td>
+                            <!--<td class="col-file">Rafael.ECAD.Framework.ServicesHost.exe</td>-->
+                            <td class="col-version">{{ application.LatestVersion }}</td>
+                            <td class="col-created">{{ datepipe.transform(application.CreateTime, 'yyyy-MM-dd') }}</td>
+                            <td class="col-last-run">
+                                <span class="run-date">{{ datepipe.transform(application.LatestRunDate, 'yyyy-MM-dd HH:mm') }}
+                                </span>
+                                <span *ngIf="application.LatestRunErrorsNumber == 0" class="run-result"><img src="./img/checkmark.svg">No
+                                    errors
+                                </span>
+                                <span *ngIf="application.LatestRunErrorsNumber > 0" class="run-result run-result-error"><img
+                                        src="./img/error-icon.svg">{{application.LatestRunErrorsNumber}} Errors</span>
+                            </td>
+                            <!--<td class="col-scheduled">
+                                <span class="scheduled-date">03/04/2018 12:28</span>
+                            </td>-->
+                            <td class="col-configs">
+                                <span>{{application.TotalConfigEntries}}</span>
+                                <!--<a href="#" class="app-settings" title="to app settings page">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                            </span>
+                                            <div class="inner-wrap">
+                                                <div class="circle">
+                                                    <span>1</span>
+                                                    <img src="./img/info-icon.svg" height="14" width="14" alt="">
+                                                </div>
+                                            </div>
+                                        </a>-->
+                            </td>
+                            <td class="col-runs">{{ application.TotalSessionsNumber }}</td>
+                            <td class="col-users">{{ application.UniqueUsersNumber }}</td>
+                            <td class="col-active">{{ application.ActiveSessionsNumber }}</td>
+                            <td class="col-errors">{{ application.TotalErrorsNumber }}</td>
+                            <td class="col-actions">
+                                <div class="icons-wrap">
+                                    <a href="javascript: void(0);" class="mail-icon">
+                                        <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                            Send mail to users
+                                        </span>
+                                    </a>
+                                    <button (click)="updateUserFavoriteApplication(application)" class="star-icon {{application.IsFavoriteForUser ? 'active' : ''}}">
+                                        <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                {{application.IsFavoriteForUser ? 'Remove favorite' : 'Add to favorites'}}
+                                        </span></button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!--application box template-->
+<ng-template #appStatisticsBox let-index="index">
+    <!-- condition area - 
+                              to dictate app type in div.box add class with: 
+                              app-type-*
+                              * can be: 
+                                  - services
+                                  - app
+                                  - task
+                              to dictate status state in div.box add class with: 
+                              app-status-*
+                              * can be: 
+                                  - offline
+                                  - online
+                                  - success
+                          -->
+    
+    <!--<div class="box box-type-{{globalsService.fixApplicationCategoryName(applicationsStatistics[index].ApplicationCategory)}} app-status-online">-->
+    <div class="box box-type-app app-status-{{ applicationsStatistics[index].ActiveSessionsNumber > 0 ? 'online' : 'offline'}}">
+        <div class="app-type {{globalsService.fixApplicationCategoryName2(applicationsStatistics[index].ApplicationCategory)}}">
+            <div class="wrap type-app-wrap">
+                <h4 class="type {{globalsService.fixApplicationCategoryName2(applicationsStatistics[index].ApplicationCategory)}}">{{globalsService.fixApplicationCategoryName2(applicationsStatistics[index].ApplicationCategory)}}</h4>
+            </div>
+            <div class="icons-wrap">
+                <button (click)="updateUserFavoriteApplication(applicationsStatistics[index])" class="star-icon {{applicationsStatistics[index].IsFavoriteForUser ? 'active' : ''}}">
+                    <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                            {{applicationsStatistics[index].IsFavoriteForUser ? 'Remove favorite' : 'Add to favorites'}}
+                    </span>
+                </button>
+                <a href="javascript: void(0);" class="mail-icon">
+                    <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                        Send mail to users
+                    </span>
+                </a>
+            </div>
+        </div>
+        <div class="box-top-wrap">
+            <div class="box-header">
+                <div class="img-wrap">
+                    <img class="logo" src="./img/{{globalsService.fixApplicationIcon(applicationsStatistics[index].ApplicationIcon, applicationsStatistics[index].ApplicationCategory)}}" alt="">
+                </div>
+                <div class="titles-wrap">
+                    <a [routerLink]="['/app-info', applicationsStatistics[index].Key]" class="title {{globalsService.fixApplicationCategoryName2(applicationsStatistics[index].ApplicationCategory)}}" title="Go to [{{applicationsStatistics[index].ApplicationName}}] info page">{{applicationsStatistics[index].ApplicationName}}</a>
+                    <h5 class="sub-title">{{applicationsStatistics[index].ProcessName}}</h5>
+                </div>
+            </div>
+            <div class="box-content">
+                <p class="content-text">{{applicationsStatistics[index].ApplicationDescription}}.</p>
+            </div>
+        </div>
+        <div class="box-footer">
+            <div class="footer-content">
+                <div class="footer-type-wrap footer-type-app footer-type-task footer-type-services">
+                    <div class="status status-success">
+                        <div class="inner-wrap success">
+                            <img src="./img/check-mark.svg" alt="" class="logo">
+                            <p class="status-text">No Errors</p>
+                        </div>
+                        <div class="inner-wrap offline">
+                            <img src="./img/offline-bar.svg" alt="" class="logo">
+                            <p class="status-text">Offline</p>
+                        </div>
+                        <div class="inner-wrap online">
+                            <img src="./img/online-bar.svg" alt="" class="logo">
+                            <p class="status-text">Online</p>
+                        </div>
+                    </div>
+                    <div class="dls-wrap">
+                        <dl class="dl-left">
+                            <div class="inner-dl-wrap">
+                                <div class="data-wrap">
+                                    <dt>Version</dt><dd>{{ applicationsStatistics[index].LatestVersion }}</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt>Created</dt><dd>{{ datepipe.transform(applicationsStatistics[index].CreateTime, 'yyyy-MM-dd') }}</dd>
+                                </div>
+                            </div>
+                            <div class="inner-dl-wrap">
+                                <div class="data-wrap">
+                                    <dt>Last Run</dt><dd>{{ datepipe.transform(applicationsStatistics[index].LatestRunDate, 'yyyy-MM-dd HH:mm') }}</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <div *ngIf="applicationsStatistics[index].LatestRunErrorsNumber == 0" class="success"><img class="checkmark" src="./img/checkmark.svg" aria-hidden="true">Successful</div>
+                                    <div *ngIf="applicationsStatistics[index].LatestRunErrorsNumber > 0" class="run-result-error"><img class="error-icon" src="./img/error-icon.svg" aria-hidden="true">&nbsp;{{applicationsStatistics[index].LatestRunErrorsNumber}} Errors</div>
+                                </div>
+                            </div>
+                        </dl>
+                        <div class="wrap-right">
+                            <dl class="dl-right">
+                                <div class="data-wrap">
+                                    <dt><span>ACTIVE</span><span>USERS</span></dt><dd>{{ applicationsStatistics[index].ActiveSessionsNumber }}</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt><span>TOTAL</span><span>USERS</span></dt><dd>{{ applicationsStatistics[index].UniqueUsersNumber }}</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt>RUNS</dt><dd>{{ applicationsStatistics[index].TotalSessionsNumber }}</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt><span>TOTAL</span><span>ERRORS</span></dt><dd>{{ applicationsStatistics[index].TotalErrorsNumber }}</dd>
+                                </div>
+                            </dl>
+                            <a href="javascript: void(0);" class="app-settings" title="config entries number">
+                                <!--<span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                    <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                </span>-->
+                                <div class="inner-wrap">
+                                    <div class="circle">
+                                        <span>{{ applicationsStatistics[index].TotalConfigEntries }}</span>
+                                    </div>
+                                    <img src="./img/gear-outline.svg" alt="">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div><!-- END .footer-type-app -->
+                
+            </div>
+        </div>
+    </div><!-- END .box -->
+</ng-template>

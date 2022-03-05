@@ -1,0 +1,122 @@
+.nav-link{
+    height: 45px;
+}
+
+.application-name-dropdown{
+    width: 400px;
+}
+
+.type-box{
+    text-transform: capitalize;
+}
+
+.run-result-error{
+    color: crimson !important;
+    font-weight: 600;
+    font-family: Arial;
+    align-self: end;
+    font-size: 13px;
+    position: relative;
+    top: 1px;
+}
+
+.run-result-error .error-icon{
+    height: 13px !important;
+    width: 15px !important;
+    vertical-align: baseline !important;
+}
+
+td.col-application a img.logo {
+    width: 20px !important;
+}
+
+.box-duo .box:first-of-type{
+    margin-left: 0px !important;
+}
+
+.box.box-type-app .app-type .type.task:before {
+    background-image: url(../../img/clipboard.svg) !important;
+    width: 11px !important;
+    height: 14px !important;
+}
+
+.box.box-type-app .app-type .type.app:before {
+    width: 13px !important;
+    left: -20px !important;
+}
+
+.box.box-type-app .app-type .type.plugin:before {
+    background-image: url(../../img/calendar.svg) !important;
+    width: 13px !important;
+    left: -17px !important;
+}
+
+.box.box-type-app .app-type .type.service:before {
+    background-image: url(../../img/settings-gears.svg) !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.box.box-type-app .app-type.task {
+    background-color: #07B4AE !important;
+}
+
+.box.box-type-app .app-type.service {
+    background-color: #D19B75 !important;
+    min-width: 94px !important;
+}
+
+.wrap.type-app-wrap{
+    text-transform: capitalize;
+}
+
+.box.box-type-app .app-type.plugin {
+    background-color: #1E90FF !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.task {
+    color: #07B4AE !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.service {
+    color: #D19B75 !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.plugin {
+    color: #1E90FF !important;
+}
+
+.box .box-top-wrap .box-header .img-wrap img {
+    width: 30px;
+    height: 30px;
+}
+
+.filter-tabs {
+    max-width: 460px !important;
+}
+
+.apps-view-mode2 .ecad-table tbody tr td.col-type span.type-box.plugin {
+    background-color: #1E90FF;
+}
+
+.apps-view-mode2 .ecad-table tbody tr td.col-type span.type-box.plugin:before {
+    background-image: url(../../img/calendar.svg);
+    width: 14px;
+    height: 14px;
+}
+
+.apps-view-mode2 .ecad-table tbody tr.type-plugin td.col-application {
+    box-shadow: inset 5px 0px 0px 0px #1E90FF;
+}
+
+.action-icons{
+    position: absolute;
+    right: 25px;
+}
+
+.action-icons span{
+    padding-top: 5px;
+    font-size: 32px;
+    cursor: pointer;
+    color: #01579B;
+}

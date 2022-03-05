@@ -1,0 +1,102 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<!--<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+</div>
+<button (click)="showConfirmation(itemListRef)" class="k-button">Please confirm</button>
+
+<div kendoDialogContainer></div>
+<div kendoWindowContainer></div>
+<router-outlet></router-outlet>-->
+
+<!--header-->
+<app-header></app-header>
+
+<!--routed component-->
+<router-outlet></router-outlet>
+
+<!-- START - Advanced Fields Modal - START -->
+<app-global-filter [screenName]="'app'"></app-global-filter>
+<!-- END -  Advanced Fields Modal - END -->
+
+<!-- START - Loading... Modal - START -->
+<div class="modal fade" id="loader-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      </div>
+      <div class="loader-modal modal-body">
+        <p>Please wait a moment ...</p>
+        <div class="loader-wrap">
+          <div class="lds-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p class="loading-small">Loading...</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END -  Loading... Modal - END -->
+
+<!-- START - Alert Modal - START -->
+<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="confirmModalLabel">
+  <div class="modal-dialog alert-modal {{modalDialogsService.getIconName()}}-modal" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">{{modalDialogsService.modalTitle}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="close advanced fields modal">
+          <span aria-hidden="true">X</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert-wrap">
+          <div class="alert-icon-wrap"><span></span></div>
+          <div class="alert-msg-wrap">
+            <p>{{modalDialogsService.modalMessage}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-footer-btn reset-btn" [ngClass]="{'hidden': modalDialogsService.modalType != 'confirm' }" data-dismiss="modal">CANCEL</button>
+        <button type="button" class="modal-footer-btn apply-btn" (click)="modalDialogsService.closeModal()">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END - Confirm Modal - END -->
+
+<!-- Start Toast - updating data -->
+<div class="toast-wrap" [hidden]="!globalsService.processingWindow_IsVisible">
+    <div class="lds-spinner small-spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <p>{{globalsService.processingWindow_Message}}</p>
+</div>
+<!-- End Toast - updating data -->

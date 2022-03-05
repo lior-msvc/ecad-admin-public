@@ -1,0 +1,78 @@
+div.filters-left{
+    display: flex;
+}
+
+.action-icons{
+    position: absolute;
+    right: 25px;
+}
+
+.action-icons span{
+    padding-top: 5px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #01579B;
+    margin-left: 5px;
+}
+
+.log-level-icon{
+    margin-right: 5px;
+}
+
+a.view-entry-details{
+    color: #01579B;
+}
+
+a.view-entry-details:hover{
+    text-decoration: underline;
+}
+
+.row-action-icon{
+    font-size: 22px;
+    color: #01579B;
+    
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.col-application{
+    width: 10%;
+    white-space: nowrap;
+}
+
+.box.box-type-app .app-type.plugin {
+    background-color: #1E90FF !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.task {
+    color: #07B4AE !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.service {
+    color: #D19B75 !important;
+}
+
+.box .box-top-wrap .box-header .titles-wrap .title.plugin {
+    color: #1E90FF !important;
+}
+
+.box .box-top-wrap .box-header .img-wrap img {
+    width: 30px;
+    height: 30px;
+}
+
+.apps-view-mode2 .ecad-table tbody tr td.col-type span.type-box.plugin {
+    background-color: #1E90FF;
+}
+
+.apps-view-mode2 .ecad-table tbody tr td.col-type span.type-box.plugin:before {
+    background-image: url(../../img/calendar.svg);
+    width: 14px;
+    height: 14px;
+}
+
+.apps-view-mode2 .ecad-table tbody tr.type-plugin td.col-application {
+    box-shadow: inset 5px 0px 0px 0px #1E90FF;
+}

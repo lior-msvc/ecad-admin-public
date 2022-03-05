@@ -1,0 +1,104 @@
+<div class="container-fluid">
+  <section class="global-filters">
+    <form action="">
+      <h3 class="gf-title">Apps Config Filters</h3>
+      <div class="box filter-box">
+        <div class="container-fluid no-gutters">
+          <div class="row no-gutters">
+            <div class="filters-left col-sm-12">
+              <div class="input-wrap selected-anim with-val" style="width: auto; margin-right: 0px;">
+                <kendo-dropdownlist name="application-name" style="width:400px;" id="application-name" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                  [defaultItem]="{Code: '', Name: 'All'}" [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}"
+                  [popupSettings]="{ width: 400 }" [(ngModel)]="applicationCode" [data]="applicationsListAsObjects"
+                  [textField]="'Name'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="refreshGridData(this.state)">
+                </kendo-dropdownlist>
+                <label for="application-name">Application Name</label>
+              </div>
+              <div class="input-wrap selected-anim with-val" style="width: auto; margin-right: 0px;">
+                <kendo-dropdownlist name="config-group" style="width:300px;" id="config-group" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                  [defaultItem]="{Code: '*', Name: 'All Groups'}" [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}"
+                  [popupSettings]="{ width: 300 }" [(ngModel)]="configGroupFilter" [data]="applicationConfigGroupsAsObjects"
+                  [textField]="'Name'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="onGroupChange(this.configGroupFilter)">
+                </kendo-dropdownlist>
+                <label for="config-group">Config Group</label>
+              </div>
+              <!--<div class="input-wrap order-by-input" style="width: 300px;">
+                <label for="show">Config Group</label>
+                <select class="filter-input" (ngModelChange)="onGroupChange($event)" [(ngModel)]="configGroupFilter" name="show" id="show"
+                  style="width: 290px; height: 44px; font-family: Roboto, 'Helvetica Neue', sans-serif; font-weight: 400;">
+                  <option value="*">All Groups</option>
+                  <option value="">Empty Group</option>
+                  <option *ngFor="let group of applicationConfigGroups" value="{{group}}">{{group}}</option>
+                </select>
+              </div>-->
+              <div class="input-wrap" style="margin-left: 0px;" title="free text search on key & value fields">
+                <label for="free-text">Free Text Search</label>
+                <input type="text" class="free-text filter-input" id="free-text" name="free-text" (ngModelChange)="onFreeTextChange($event)"
+                  [(ngModel)]="freeSearchText">
+              </div>
+              <div class="checkbox-input custom-control custom-checkbox" title="show global configurations" style="margin-left: 0px; padding-left: 0px; width: auto;">
+                <input type="checkbox" class="custom-control-input cursor-pointer" [(ngModel)]="showGlobalConfigEntries" (ngModelChange)="refreshGridData(this.state)"
+                  [ngModelOptions]="{standalone: true}" id="cb-favorites-only" aria-label="show also global configurations">
+                <label class="custom-control-label cursor-pointer" for="cb-favorites-only">Show Global Configurations</label>
+              </div>
+              <div class="checkbox-input custom-control custom-checkbox" style="width: auto; position: absolute; right: 20px;">
+                <button [disabled]="!globalsService.currentUserIsAdmin()" type="button" class="add-btn" title="add global configuration"
+                  (click)="updateAppConfigEntry(null)"> + ADD NEW</button>
+                <div class="custom-control" style="padding-left: 10px;">
+                  <span title="auto size grid columns" class="k-icon k-i-arrows-resizing action-icon p-t-5" style="margin-right: 10px;" (click)="appsConfigGrid.autoFitColumns()"></span>
+                  <span title="refresh config entries" class="k-icon k-i-refresh action-icon" (click)="reloadApplicationConfigEntries()"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- END .container-fluid -->
+      </div><!-- END .filter-box -->
+    </form>
+  </section><!-- END .global-filters -->
+
+  <!--apps config grid-->
+  <section>
+    <kendo-grid #appsConfigGrid [data]="gridData" [pageSize]="state.take" [skip]="state.skip" [sort]="state.sort" [filter]="state.filter"
+      [sortable]="true" [pageable]="true" (dataStateChange)="refreshGridData($event)" [columnMenu]="true" scrollable="none"
+      [resizable]="true">
+      <kendo-grid-column field="RecordId" title="Record Id" [sortable]="false" width="150" [hidden]="true"></kendo-grid-column>
+      <kendo-grid-column field="ProcessCode" title="Type" [sortable]="true" width="200">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <span>{{ dataItem.ProcessCode == 0 ? "Global" : "Process" }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="ApplicationName" title="Application" [sortable]="true" width="200"></kendo-grid-column>
+      <kendo-grid-column field="PluginName" title="Plugin" [sortable]="true" width="150"></kendo-grid-column>
+      <kendo-grid-column field="ServerName" title="Server" [sortable]="true" width="150" [hidden]="true"></kendo-grid-column>
+      <kendo-grid-column field="UserName" title="User" [sortable]="true" width="150" [hidden]="true"></kendo-grid-column>
+      <kendo-grid-column field="ConfigGroup" title="Group" [sortable]="true" width="200"></kendo-grid-column>
+      <kendo-grid-column field="ConfigKey" title="Key" [sortable]="true" width="200"></kendo-grid-column>
+      <kendo-grid-column field="ConfigValue" title="Value" [sortable]="true" width="200"></kendo-grid-column>
+      <kendo-grid-column field="ConfigDescription" title="Description" [sortable]="true" width="300" [hidden]="true"></kendo-grid-column>
+      <kendo-grid-column field="Status" title="Status" [sortable]="true" width="200">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <div class="status" [ngClass]="{'not-active': dataItem.Status != 1 }">{{ dataItem.Status == 1 ? 'Active' : 'Not
+            Active' }}</div>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="LastUpdateTime" title="Update Time" [sortable]="true" width="150">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <span>{{ datepipe.transform(dataItem.LastUpdateTime, 'yyyy-MM-dd HH:mm') }}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="RecordId" title="" [sortable]="false" [columnMenu]="false">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <div class="actions">
+            <span [hidden]="!globalsService.currentUserIsAdmin()" title="edit" class="k-icon k-i-track-changes" (click)="updateAppConfigEntry(dataItem)"></span>
+            <span [hidden]="!globalsService.currentUserIsAdmin()" title="create copy" class="k-icon k-i-copy" (click)="duplicateAppConfigEntry(dataItem)"></span>
+            <span [hidden]="!globalsService.currentUserIsAdmin()" title="delete" class="k-icon k-i-delete" (click)="deleteAppConfigEntry(dataItem.RecordId)"></span>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </section>
+
+  <!-- START - App Config Entry Modal - START -->
+  <app-app-config-entry (onSave)="reloadApplicationConfigEntries()"></app-app-config-entry>
+  <!-- END - App Config Entry Modal - END -->
+</div>

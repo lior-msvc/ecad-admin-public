@@ -1,0 +1,514 @@
+<div class="container-fluid">
+
+  <nav class="breadcrumbs-nav" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a title="navigate to sessions list" routerLink="/sessions">Sessions</a></li>
+      <li class="breadcrumb-item">Session</li>
+      <li class="breadcrumb-item" *ngIf="showLogEntryDetails">Log Entry Details</li>
+    </ol>
+  </nav>
+
+  <section class="sessions-details">
+    <!--session header-->
+    <div class="box app-sessions-box">
+      <dl class="apps-session-title" style="margin-bottom: 0px;">
+        <div class="title">
+          <h3 class="inner-box-title">SESSION</h3>
+        </div>
+
+        <!-- condition area - to dictate sdtatus state
+        in div.box add class with: 
+        app-status-*
+        * can be: 
+            - offline
+            - online
+            - success
+    -->
+        <div class="box app-info-box app-status-{{ isSessionOnline() ? 'online' : 'offline'}}" style="box-shadow: none !important;">
+          <div class="no-gutters">
+            <div class="row no-gutters">
+              <div class="col-6">
+                <div class="app-details-wrap">
+                  <div class="left">
+                    <div class="img-wrap" *ngIf="sessionDetails.ApplicationCategory != null">
+                      <img style="width: 35px; height: 30px;" title="type: {{sessionDetails.ApplicationCategory}}" class="logo" src="./img/{{globalsService.fixApplicationIcon(sessionDetails.ApplicationIcon, sessionDetails.ApplicationCategory)}}"
+                        alt="">
+                    </div>
+                    <div class="status">
+                      <div class="inner-wrap success">
+                        <img src="./img/check-mark.svg" alt="" class="logo">
+                        <p class="status-text">No Errors</p>
+                      </div>
+                      <div class="inner-wrap offline">
+                        <img src="./img/offline-bar.svg" alt="" class="logo">
+                        <p class="status-text">Offline</p>
+                      </div>
+                      <div class="inner-wrap online">
+                        <img src="./img/online-bar.svg" alt="" class="logo">
+                        <p class="status-text">Online</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- END .app-info-box -->
+      </dl>
+      <dl class="apps-session-dl" style="padding-top: 7px; margin-right: 0px;">
+        <div class="sec1">
+          <div class="data-wrap">
+            <dt>TYPE</dt><dd><span class="icon-container"><img title="platform: {{sessionDetails.SessionType}}" style="width:14px; height:14px;"
+                  *ngIf="sessionDetails.SessionType != null" src="./img/{{getSessionTypeLogo()}}" alt="" aria-describedby="false"></span>{{sessionDetails.SessionType}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>SERVER</dt><dd>{{sessionDetails.ServerName}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>USER</dt><dd>{{sessionDetails.UserName}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>PLUGIN</dt><dd>{{sessionDetails.PluginName}}</dd>
+          </div>
+        </div>
+        <div class="sec2">
+          <div class="data-wrap">
+            <dt>APPLICATION</dt><dd>{{sessionDetails.ApplicationName}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>PROCESS</dt><dd>{{sessionDetails.ProcessName}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>VERSION</dt><dd>{{sessionDetails.Version}}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>FRAMEWORK</dt><dd>{{sessionDetails.FrameworkVersion}}</dd>
+          </div>
+        </div>
+        <div class="sec3">
+          <div class="data-wrap">
+            <dt>START TIME</dt><dd>{{ datepipe.transform(sessionDetails.OpenTime, 'dd/MM/yyyy HH:mm') }}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>LAST PING</dt><dd>{{ datepipe.transform(sessionDetails.LastPingTime, 'dd/MM/yyyy HH:mm') }}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>FINISH TIME</dt><dd>{{ datepipe.transform(sessionDetails.CloseTime, 'dd/MM/yyyy HH:mm') }}</dd>
+          </div>
+          <div class="data-wrap">
+            <dt>TOTAL TIME</dt><dd>{{ sessionDetails.SessionTime }}</dd>
+          </div>
+        </div>
+      </dl>
+      <dl class="active-users">
+        <div class="data-wrap">
+          <dt>ERRORS</dt><dd>{{ sessionDetails.ErrorsNumber }}</dd>
+        </div>
+      </dl>
+      <dl class="active-users">
+        <div class="data-wrap">
+          <dt>CONFIG</dt><dd>{{ sessionAppsConfigUsage.length }}</dd>
+        </div>
+      </dl>
+      <dl class="active-users">
+        <div class="data-wrap">
+          <dt>LOG ENTRIES</dt><dd>{{ getTotalLogs() }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!--tabs-->
+    <section [hidden]="showLogEntryDetails">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-log-analysis-tab" data-toggle="tab" href="#nav-log-analysis" role="tab" aria-controls="nav-log-analysis"
+            aria-selected="true"><span class="k-icon k-i-list-unordered" style="margin-right:5px; font-size: 25px;"></span>Session
+            Log
+          </a>
+          <a class="nav-item nav-link" id="nav-app-configs-tab" data-toggle="tab" href="#nav-app-configs" role="tab" aria-controls="nav-app-configs"
+            aria-selected="false"><span class="k-icon k-i-gears" style="margin-right:5px; font-size: 25px;"></span>Configurations
+            Usage
+          </a>
+          <a class="nav-item nav-link" id="nav-more-details-tab" data-toggle="tab" href="#nav-more-details" role="tab" aria-controls="nav-more-details"
+            aria-selected="false"><span class="k-icon k-i-ungroup" style="margin-right:5px; font-size: 25px;"></span>Full
+            Session Details</a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tab-content">
+        <div class="tab-pane tab-log-analysis fade show active" id="nav-log-analysis" role="tabpanel" aria-labelledby="nav-log-analysis-tab">
+          <div class="box filter-box">
+            <div class="no-gutters">
+              <div class="row no-gutters">
+                <div class="filters-left col-sm-12">
+                  <div class="input-wrap selected-anim with-val">
+                    <kendo-dropdownlist name="log-level" id="log-level" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns log-level-dropdown"
+                      [defaultItem]="{Code: 0, Name: 'All'}" [(ngModel)]="logLevel" [data]="[{Code: 1, Name: 'Error'}, {Code: 2, Name: 'Warning'}, {Code: 3, Name: 'Info'}, {Code: 4, Name: 'Debug'}, {Code: 5, Name: 'Audit Entry'}, {Code: 6, Name: 'Error Entry'}, {Code: 7, Name: 'Email Entry'}]"
+                      [textField]="'Name'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="reloadLogsList(true)">
+                    </kendo-dropdownlist>
+                    <label for="log-level">Log Level</label>
+                  </div>
+                  <div class="input-wrap">
+                    <label for="source">Source</label>
+                    <input type="text" class="source filter-input" id="source" name="source" (keyup.enter)="reloadLogsList(true)" [(ngModel)]="source">
+                  </div>
+                  <div class="input-wrap" title="free text search on log message & extra data fields">
+                    <label for="free-text">Free Text Search</label>
+                    <input type="text" class="free-text filter-input" id="free-text" name="free-text" (keyup.enter)="reloadLogsList(true)" [(ngModel)]="freeSearchText">
+                  </div>
+                  <div class="custom-control action-icons">
+                    <span title="auto size grid columns" class="k-icon k-i-arrows-resizing p-t-5" (click)="logsGrid.autoFitColumns()"></span>
+                    <span title="refresh logs" class="k-icon k-i-refresh" (click)="reloadLogsList()"></span>
+                  </div>
+                </div>
+              </div>
+            </div><!-- END .container-fluid -->
+          </div><!-- END .filter-box -->
+          <div class="group-sessions-wrap gsw-pagination">
+            <div class="inner-tab-content">
+              <div class="box">
+                <kendo-grid #logsGrid [data]="viewLogs | async" [loading]="viewLogs['loading']" [resizable]="true" [pageable]="true" [pageSize]="stateLogs.take"
+                  [skip]="stateLogs.skip" [sort]="stateLogs.sort" [sortable]="true" scrollable="none" (dataStateChange)="dataStateChangeLogs($event)"
+                  [columnMenu]="true" [filterable]="false" [rowClass]="rowCallback">
+                  <kendo-grid-column field="RecordId" title="Record Id" [resizable]="true" [sortable]="true" [columnMenu]="true" width="175">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="LogLevelName" title="Log Level" [resizable]="true" [sortable]="true" [columnMenu]="true" width="200"
+                    [class]="{'codeColumn': true}">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                      <div class="cursor-pointer view-entry-details" (click)="viewLogEntryDetails(dataItem)" title="view more details">
+                        <span class="log-level-icon k-icon k-i-info" [hidden]="dataItem.LogLevel != 3"></span>
+                        <span class="log-level-icon k-icon k-i-error" [hidden]="dataItem.LogLevel != 1 && dataItem.LogLevel != 6"></span>
+                        <span class="log-level-icon k-icon k-i-email" [hidden]="dataItem.LogLevel != 7"></span>
+                        <span class="log-level-icon k-icon k-i-table-align-middle-left" [hidden]="dataItem.LogLevel != 4"></span>
+                        <span class="log-level-icon k-icon k-i-dictionary-add" [hidden]="dataItem.LogLevel != 5"></span>
+                        <span class="log-level-icon k-icon k-i-bell" [hidden]="dataItem.LogLevel != 2"></span>
+                        <span>{{dataItem.LogLevelName}}</span>
+                      </div>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <kendo-grid-column field="Source" title="Source" [resizable]="true" [sortable]="true" [columnMenu]="true" width="300">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="FullClassName" title="Class Name" [resizable]="true" [sortable]="true" [columnMenu]="true" [hidden]="true">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="LogMessage" title="Message" [resizable]="true" [sortable]="true" [columnMenu]="true">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="ExtraData_Text" title="Extra Data" width="300" [autoSize]="false" [resizable]="true" [sortable]="false" [columnMenu]="true" [hidden]="true">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="ExtraData_KeyValue" title="Extra Data (Array)" width="300" [resizable]="true" [sortable]="false" [columnMenu]="true"
+                    [hidden]="true">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="ExtraData_Xml" title="Extra Data (XML)" width="300" [resizable]="true" [sortable]="false" [columnMenu]="true"
+                    [hidden]="true">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="CreateTime" title="Time Stamp" width="180" type="date" format="{0:dd/MM/yy HH:mm:ss}">
+                  </kendo-grid-column>
+                  <kendo-grid-column field="SessionId" title="" [sortable]="false" [columnMenu]="false" [style]="{'text-align': 'right'}">
+                    <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                      <span (click)="viewLogEntryDetails(dataItem)" title="view more details" class="row-action-icon cursor-pointer k-icon k-i-eye"></span>
+                    </ng-template>
+                  </kendo-grid-column>
+                </kendo-grid>
+              </div>
+            </div>
+          </div><!-- End .group-sessions-wrap -->
+        </div><!-- End tab -->
+        <div class="tab-pane tab-app-configs fade" id="nav-app-configs" role="tabpanel" aria-labelledby="nav-app-configs-tab">
+          <div class="group-sessions-wrap gsw-pagination">
+            <div class="inner-tab-content">
+              <div class="box">
+                <div class="apps-view-mode2">
+                  <table class="table ecad-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="col-appconfig-entry record-id">App Config Record Id</th>
+                        <th scope="col" class="col-appconfig-entry group">Config Group</th>
+                        <th scope="col" class="col-appconfig-entry key">Config Key</th>
+                        <th scope="col" class="col-appconfig-entry value">Config Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="type-app" *ngFor="let appConfigUsageEntry of sessionAppsConfigUsage">
+                        <td class="col-appconfig-entry record-id">{{ appConfigUsageEntry.AppConfigRecordId }}</td>
+                        <td class="col-appconfig-entry group">{{ appConfigUsageEntry.ConfigGroup }}</td>
+                        <td class="col-appconfig-entry key">{{ appConfigUsageEntry.ConfigKey }}</td>
+                        <td class="col-appconfig-entry value">{{ appConfigUsageEntry.ConfigValue }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div><!-- End .group-sessions-wrap -->
+        </div><!-- End tab -->
+        <div class="tab-pane tab-more-details fade" id="nav-more-details" role="tabpanel" aria-labelledby="nav-more-details-tab">
+          <div class="group-sessions-wrap gsw-pagination">
+            <div class="inner-tab-content">
+              <div class="box app-sessions-box">
+                <dl class="apps-session-dl" style="padding-top: 7px; margin-right: 0px;">
+                  <div class="sec4">
+                    <div class="data-wrap">
+                      <dt>TYPE</dt><dd><span class="icon-container"><img title="platform: {{sessionDetails.SessionType}}"
+                            style="width:14px; height:14px;" *ngIf="sessionDetails.SessionType != null" src="./img/{{getSessionTypeLogo()}}"
+                            alt="" aria-describedby="false"></span>{{sessionDetails.SessionType}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>SERVER</dt><dd>{{sessionDetails.ServerName}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>USER</dt><dd>{{sessionDetails.UserName}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>PLUGIN</dt><dd>{{sessionDetails.PluginName}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>APPLICATION</dt><dd>{{sessionDetails.ApplicationName}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>PROCESS</dt><dd>{{sessionDetails.ProcessName}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>VERSION</dt><dd>{{sessionDetails.Version}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>FRAMEWORK</dt><dd>{{sessionDetails.FrameworkVersion}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>SESSION VERSION</dt><dd>{{sessionDetails.SessionDataVersion}}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>START TIME</dt><dd>{{ datepipe.transform(sessionDetails.OpenTime, 'dd/MM/yyyy HH:mm') }}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>LAST PING</dt><dd>{{ datepipe.transform(sessionDetails.LastPingTime, 'dd/MM/yyyy HH:mm') }}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>FINISH TIME</dt><dd>{{ datepipe.transform(sessionDetails.CloseTime, 'dd/MM/yyyy HH:mm') }}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>CLOSE REASON</dt><dd>{{ sessionDetails.CloseReason }}</dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>TOTAL TIME</dt><dd>{{ sessionDetails.SessionTime }}</dd>
+                    </div>
+                  </div>
+                  <div *ngIf="sessionDetails.SessionData != null" class="sec5">
+                    <div *ngFor="let extraData of sessionDetails.SessionData.split(';')" class="data-wrap">
+                      <dt>{{ extraData.split("=",2)[0].trim().toUpperCase() }}</dt><dd>{{ extraData.split("=",2)[1].trim()
+                        }}
+                      </dd>
+                    </div>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div><!-- End .group-sessions-wrap -->
+        </div><!-- End tab -->
+      </div>
+    </section>
+
+    <!--details-->
+    <section *ngIf="showLogEntryDetails">
+      <div class="section-header">
+        <a (click)="hideLogEntryDetails()" class="session-back-btn cursor-pointer">
+          <img class="back-arrow" src="./img/back-arrow-session.svg" alt="" aria-describedby="false">
+          <img class="back-arrow back-arrow-hover" src="./img/back-arrow-session-hover.svg" alt="" aria-describedby="false">BACK
+          TO SESSION
+        </a>
+      </div>
+      <div class="box top-error-entry-box">
+        <div class="arrow-btns-wrap">
+          <button type="button" class="arrow arrow-left">
+            <img class="arrow-left-nohover" (click)="moveToNextLogEntry(-1)" src="./img/next-error-arrow.svg" alt="">
+            <img class="arrow-left-hover" (click)="moveToNextLogEntry(-1)" src="./img/next-error-arrow-hover.svg" alt="">
+          </button>
+          <button type="button" class="arrow arrow-right">
+            <img class="arrow-right-nohover" (click)="moveToNextLogEntry(1)" src="./img/next-error-arrow.svg" alt="">
+            <img class="arrow-right-hover" (click)="moveToNextLogEntry(1)" src="./img/next-error-arrow-hover.svg" alt="">
+          </button>
+        </div>
+        <div class="inner-wrap">
+          <div class="left-wrap">
+            <h4 class="inner-box-title {{viewLogs.value.data[currentRowIndex].LogLevelName}}">
+              <span class="log-level-icon k-icon k-i-info" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 3"></span>
+              <span class="log-level-icon k-icon k-i-error" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 1 && viewLogs.value.data[currentRowIndex].LogLevel != 6"></span>
+              <span class="log-level-icon k-icon k-i-email" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 7"></span>
+              <span class="log-level-icon k-icon k-i-table-align-middle-left" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 4"></span>
+              <span class="log-level-icon k-icon k-i-dictionary-add" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 5"></span>
+              <span class="log-level-icon k-icon k-i-bell" [hidden]="viewLogs.value.data[currentRowIndex].LogLevel != 2"></span>
+              {{viewLogs.value.data[currentRowIndex].LogLevelName.replace("Entry"," Entry")}}
+            </h4>
+            <p class="timestamp">
+              <span class="date">{{ datepipe.transform(viewLogs.value.data[currentRowIndex].CreateTime, 'dd/MM/yy HH:mm:ss')
+                }}
+              </span>
+            </p>
+            <p class="record-id" style="white-space: nowrap !important;">
+              <span class="record">RECORD ID</span>
+              <span class="id" style="margin-left: 5px; white-space: nowrap !important;">{{viewLogs.value.data[currentRowIndex].RecordId}}</span>
+            </p>
+          </div>
+          <div class="right-wrap">
+            <dl class="error-entry-dl">
+              <div class="data-wrap">
+                <dt>ROW INDEX</dt><dd style="white-space: normal !important; word-break: break-all;">#{{currentRowIndex + 1}} of {{ viewLogs.value.data.length }}</dd>
+              </div>
+              <div class="data-wrap">
+                <dt>MESSAGE</dt><dd style="white-space: normal !important; word-break: break-all;">{{viewLogs.value.data[currentRowIndex].LogMessage}}</dd>
+              </div>
+              <div class="data-wrap">
+                <dt>SOURCE</dt><dd style="white-space: normal !important; word-break: break-all;">{{viewLogs.value.data[currentRowIndex].Source}}</dd>
+              </div>
+              <div class="data-wrap">
+                <dt>FULL CLASS NAME</dt><dd style="white-space: normal !important; word-break: break-all;">{{viewLogs.value.data[currentRowIndex].FullClassName}}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="section-header" style="margin-bottom: 5px;">
+        <div class="title">
+          {{viewLogs.value.data[currentRowIndex].LogLevelName.replace("Entry"," Entry")}} Details <span [hidden]="!loadingEntryDetails"
+            style="margin-left:5px;font-weight: 500;">( loading... )</span>
+        </div>
+      </div>
+      <div class="bottom-error-entry-boxes">
+        <div class="container-fluid no-gutters p-0">
+          <div class="row no-gutters">
+            <div class="col-12">
+              <div class="box-left-outerwrap">
+                <div class="box box-left" style="padding-top: 10px;">
+                  <dl class="error-entry-info-dl">
+                    <section *ngIf="viewLogs.value.data[currentRowIndex].LogLevel == 5">
+                      <div class="data-wrap">
+                        <dt>SOURCE</dt><dd>
+                          <p>{{currentLogEntry.Source}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>ACTION</dt><dd>
+                          <p>{{currentLogEntry.Action}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>ACTION DATA</dt><dd>
+                          <p>{{currentLogEntry.ActionData}}</p>
+                        </dd>
+                      </div>
+                    </section>
+                    <section *ngIf="viewLogs.value.data[currentRowIndex].LogLevel == 6">
+                      <div class="data-wrap">
+                        <dt>SOURCE</dt><dd>
+                          <p>{{currentLogEntry.Source}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>FULL CLASS NAME</dt><dd>
+                          <p>{{currentLogEntry.FullClassName}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>EXCEPTION TYPE</dt><dd>
+                          <p>{{currentLogEntry.ExceptionType}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>EXCEPTION</dt><dd>
+                          <p>{{currentLogEntry.Exception}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>EXCEPTION TRACE</dt><dd>
+                          <p>{{currentLogEntry.ExceptionStackTrace}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>INNER EXCEPTION</dt><dd>
+                          <p>{{currentLogEntry.InnerException}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>INNER EXCEPTION TRACE</dt><dd>
+                          <p>{{currentLogEntry.InnerExceptionStackTrace}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>FULL TRACE</dt><dd>
+                          <p>{{currentLogEntry.FullExceptionStackTrace}}</p>
+                        </dd>
+                      </div>
+                    </section>
+                    <section *ngIf="viewLogs.value.data[currentRowIndex].LogLevel == 7">
+                      <div class="data-wrap">
+                        <dt>FROM</dt><dd>
+                          <p>{{currentLogEntry.AddressFrom}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>TO</dt><dd>
+                          <p>{{currentLogEntry.AddressTo}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>CC</dt><dd>
+                          <p>{{currentLogEntry.AddressCC}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>BCC</dt><dd>
+                          <p>{{currentLogEntry.AddressBCC}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>SUBJECT</dt><dd>
+                          <p>{{currentLogEntry.Subject}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>BODY</dt><dd>
+                          <p>{{currentLogEntry.Body}}</p>
+                        </dd>
+                      </div>
+                      <div class="data-wrap">
+                        <dt>ATTACHMENTS</dt><dd>
+                          <p>{{currentLogEntry.Attachments}}</p>
+                        </dd>
+                      </div>
+                    </section>
+                    <div class="data-wrap">
+                      <dt>EXTRA DATA</dt><dd>
+                        <p>{{currentLogEntry.ExtraData_Text}}</p>
+                      </dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>EXTRA DATA (ARRAY)</dt><dd *ngIf="currentLogEntry.ExtraData_KeyValue != ''" style="width: 100%;">
+                        <table class="table ecad-table" style="width: 100%;">
+                          <thead>
+                            <tr>
+                              <th class="extra-data-key" style="padding-top: 0px;">KEY</th>
+                              <th class="extra-data-value" style="padding-top: 0px;">VALUE</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngIf="currentLogEntry.ExtraData_KeyValue != null">
+                            <tr *ngFor="let extraData of currentLogEntry.ExtraData_KeyValue.split(';')">
+                              <td class="extra-data-key">{{ extraData.split("=",2)[0].trim() }}</td>
+                              <td class="extra-data-value">{{ extraData.split("=",2)[1].trim() }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </dd>
+                    </div>
+                    <div class="data-wrap">
+                      <dt>EXTRA DATA (XML)</dt><dd>
+                        <p>{{currentLogEntry.ExtraData_Xml}}</p>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+</div>

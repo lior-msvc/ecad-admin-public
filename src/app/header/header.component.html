@@ -1,0 +1,105 @@
+<header class="bg-primary">
+  <div class="container-fluid">
+    <div class="header-wrap">
+      <div class="header-left">
+        <div class="logo-wrap">
+          <img class="logo" src="./assets/images/logo.png" alt="">
+        </div>
+        <nav>
+          <ul class="menu">
+            <!--<li class="menu-item">
+              <a class="nav-link" [class.current-page]="globalsService.CurrentPage == 'home'" title="Home" routerLink="/home">
+                <div class="nav-link-wrap">
+                  <img src="./assets/images/home.svg" class="link-icon home-icon" aria-hidden="true" alt="">
+                  <span class="link-text" [class.active]="globalsService.CurrentPage == 'home'">Home</span>
+                </div>
+              </a>
+            </li>-->
+            <li class="menu-item">
+              <a class="nav-link" [class.current-page]="globalsService.CurrentPage == 'apps'" title="Apps" routerLink="/apps">
+                <div class="nav-link-wrap">
+                  <img src="./assets/images/apps.svg" class="link-icon app-icon" aria-hidden="true" alt="">
+                  <span class="link-text" [class.active]="globalsService.CurrentPage == 'apps'">Apps</span>
+                </div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a class="nav-link" title="Users" [class.current-page]="globalsService.CurrentPage == 'users'" routerLink="/users">
+                <div class="nav-link-wrap">
+                  <img src="./assets/images/users.svg" class="link-icon users-icon" aria-hidden="true" alt="">
+                  <span class="link-text">Users</span>
+                </div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a class="nav-link" title="Sessions" [class.current-page]="globalsService.CurrentPage == 'sessions'" routerLink="/sessions">
+                <div class="nav-link-wrap">
+                  <img src="./assets/images/clock.svg" class="link-icon sessions-icon" aria-hidden="true" alt="">
+                  <span class="link-text">Sessions</span>
+                </div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a class="nav-link" title="Apps Config" [class.current-page]="globalsService.CurrentPage == 'apps-config'" routerLink="/apps-config">
+                <div class="nav-link-wrap">
+                  <img src="./assets/images/gear.svg" class="link-icon configs-icon" aria-hidden="true" alt="">
+                  <span class="link-text">Config</span>
+                </div>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+        <form action="" class="search-wrap">
+          <div class="search-inner-wrap">
+            <input type="text" id="search-input" name="search-input" [(ngModel)]="searchText" placeholder="Search for users, applications, logs">
+            <input type="submit" id="search-submit" (click)="doSearch()" value="">
+          </div>
+        </form>
+        <!--<div class="inner-wrap" style="color: white; padding-top: 10px;">
+           <span  class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;loading...
+        </div>-->
+      </div><!-- End .header-left  -->
+
+      <div class="header-right">
+
+        <div class="current-user-wrap">
+
+          <div class="inner-wrap">
+            <p class="user-name">{{ globalsService.findGlobalSetting("CurrentUserName","loading...") }} ({{ globalsService.currentUserIsAdmin() ? "Admin" : "User" }})</p>
+            <p class="user-role">{{ globalsService.CurrentEnvironmnet }} environment</p>
+          </div>
+          <img src="./assets/images/user-placeholder.svg" alt="" class="curret-user-icon">
+
+        </div>
+
+        <!--
+        <div class="navbar navbar-dark">
+          <button class="navbar-toggler border-0 collapsed" type="button" data-toggle="collapse" data-target="#siteNavBar" aria-controls="siteNavBar"
+            aria-expanded="false" aria-label="Toggle navigation" title="choose environment">
+            <span class="navbar-toggler-icon">
+              <div class="bars-wrap">
+                <span class="bar bar1"></span>
+                <span class="bar bar2"></span>
+                <span class="bar bar3"></span>
+              </div>
+            </span>
+          </button>
+          <div class="collapse" id="siteNavBar">
+            <div class="card card-body">
+              <nav class="main-nav">
+                <h2>Choose Environment</h2>
+                <ul>
+                  <li class="menu-item"><a href="" title="" class="current-env">Production</a></li>
+                  <li class="menu-item"><a href="" title="">Testing</a></li>
+                  <li class="menu-item"><a href="" title="">Development</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+        -->
+      </div><!-- End .header-right  -->
+    </div>
+  </div>
+</header>

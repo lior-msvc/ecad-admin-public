@@ -1,0 +1,183 @@
+<div class="container-fluid">
+  <section class="global-filters">
+    <form action="">
+      <h3 class="gf-title">Sessions Filters</h3>
+      <div class="box filter-box">
+        <div class="container-fluid no-gutters">
+          <div class="row no-gutters">
+            <div class="filters-left col-sm-12">
+              <div class="input-wrap selected-anim with-val">
+                <kendo-dropdownlist [disabled]="onlineSessionsOnly" name="time-range" id="time-range" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                  [(ngModel)]="timeRange" [data]="['Today', 'This Month', 'Dates Range']" 
+                  (valueChange)="reloadSessionsList(true)">
+                </kendo-dropdownlist>
+                <label for="time-range">Time Range</label>
+              </div>
+              <div class="input-wrap selected-anim with-val">
+                <kendo-dropdownlist name="user" id="user" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns" [defaultItem]="{Code: 0, UserName: 'All'}"
+                  [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}" [(ngModel)]="userCode" [data]="globalsService.findGlobalSetting('UsersList',[])"
+                  [textField]="'UserName'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="reloadSessionsList(true)">
+                </kendo-dropdownlist>
+                <label for="user">User</label>
+              </div>
+              <div class="input-wrap selected-anim with-val">
+                <kendo-dropdownlist name="server" id="server" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns" [defaultItem]="{Code: 0, ServerName: 'All'}"
+                  [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}" [(ngModel)]="serverCode" [data]="globalsService.findGlobalSetting('ServersList',[])"
+                  [textField]="'ServerName'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="reloadSessionsList(true)">
+                </kendo-dropdownlist>
+                <label for="server">Server</label>
+              </div>
+              <div class="input-wrap selected-anim with-val">
+                <kendo-dropdownlist name="application-name" style="width:400px;" id="application-name" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                  [defaultItem]="{Code: '', Name: 'All'}" [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}"
+                  [popupSettings]="{ width: 400 }" [(ngModel)]="applicationCode" [data]="globalsService.findGlobalSetting('FullApplicationsList',[])"
+                  [textField]="'Name'" [valueField]="'Code'" [valuePrimitive]="true" (valueChange)="reloadSessionsList(true)">
+                </kendo-dropdownlist>
+                <label for="application-name">Application Name</label>
+              </div>
+              <div class="checkbox-input custom-control custom-checkbox" style="padding-left: 0px; margin-left: 0px; width: auto;">
+                <input type="checkbox" [(ngModel)]="onlineSessionsOnly" [ngModelOptions]="{standalone: true}" (change)="reloadSessionsList(true)"
+                  class="custom-control-input cursor-pointer" id="cb-online-only" name="cb-online-only" aria-label="showing online sessions only">
+                <label class="custom-control-label cursor-pointer" for="cb-online-only">Online Sessions Only</label>
+              </div>
+              <div class="checkbox-input custom-control custom-checkbox" style="padding-left: 0px; margin-left: 25px; width: auto;">
+                <input type="checkbox" [(ngModel)]="sessionsWithErrors" [ngModelOptions]="{standalone: true}" (change)="reloadSessionsList(true)"
+                  class="custom-control-input cursor-pointer" id="cb-errors-only" name="cb-errors-only" aria-label="showing only sessions with errors">
+                <label class="custom-control-label cursor-pointer" for="cb-errors-only">Sessions With Errors</label>
+              </div>
+              <div class="checkbox-input custom-control custom-checkbox" style="width: auto; position: absolute; right: 20px;">
+                <!--<button type="button" class="add-btn" title="add global configuration" (click)="updateAppConfigEntry(null)"> +
+                                    ADD NEW</button>-->
+                <!--<div class="custom-control action-icons" style="padding-left: 10px;">
+                  <span title="auto size grid columns" class="k-icon k-i-arrows-resizing p-t-5" (click)="sessionsGrid.autoFitColumns()"></span>
+                  <span title="refresh sessions" class="k-icon k-i-refresh action-icon" (click)="reloadSessionsList()"></span>
+                </div>-->
+              </div>
+            </div>
+            <div class="filters-left col-sm-12" [hidden]="timeRange != 'Dates Range'">
+              <div class="input-wrap selected-anim with-val" tabindex="1" [hidden]="timeRange != 'Dates Range'">
+                <kendo-datetimepicker id="from-date" class="supply-date filter-input date-input" style="width: 225px; padding-top: 5px;"
+                  name="from-date" [format]="'dd/MM/yyyy HH:mm'" [(value)]="fromDate" [min]="minDate" (keydown.enter)="reloadSessionsList(true)">
+                </kendo-datetimepicker>
+                <label for="from-date">From Date </label>
+              </div>
+              <div class="input-wrap selected-anim with-val" [hidden]="timeRange != 'Dates Range'">
+                <kendo-datetimepicker id="to-date" class="supply-date filter-input date-input" style="width: 225px; padding-top: 5px;" name="to-date"
+                  [format]="'dd/MM/yyyy HH:mm'" [(value)]="toDate" (keydown.enter)="reloadSessionsList(true)">
+                </kendo-datetimepicker>
+                <label for="to-date">Until Date </label>
+              </div>
+              <button type="button" class="add-btn" style="margin-top: 3px;" title="apply dates range" (click)="reloadSessionsList(true)">APPLY</button>
+            </div>
+          </div>
+        </div><!-- END .container-fluid -->
+      </div><!-- END .filter-box -->
+    </form>
+  </section><!-- END .global-filters -->
+
+  <!--sessions grid-->
+  <section>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width:98%; padding-top: 0px; padding-bottom: 5px; vertical-align: bottom;">
+          <h3 *ngIf="dataLoaded" style="margin-bottom: 0px;" class="gf-title">{{ this.getTotalSessions() == 0 ? 0 : stateSessions.skip
+            + 1 }} - {{ ((stateSessions.skip + 1) + stateSessions.take > this.getTotalSessions()) ? this.getTotalSessions()
+            : (toNumber(stateSessions.skip) + toNumber(stateSessions.take)) }} of {{this.getTotalSessions()}} sessions</h3>
+          <h3 *ngIf="!dataLoaded" style="margin-bottom: 0px;" class="gf-title">...</h3>
+        </td>
+
+        <td style="width:1%; padding-top: 0px; padding-bottom: 0px; white-space:nowrap;">
+          <div class="input-wrap selected-anim with-val" style="margin-bottom: 0px;">
+            <label for="rows-number">Rows Number</label>
+            <select [(ngModel)]="stateSessions.take" (ngModelChange)="reloadSessionsList()" class="filter-input" id="rows-number" style="width: 125px; background-position: 100px 7px; font-size: 15px; height: 38px;">
+              <option></option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </td>
+        <td style="width:1%; padding-top: 5px; padding-bottom: 0px; white-space:nowrap; vertical-align: top;">
+          <!--<div class="custom-control action-icons" style="padding-right: 10px;">-->
+          <span title="auto size grid columns" class="k-icon k-i-arrows-resizing p-t-5 action-icon" (click)="sessionsGrid.autoFitColumns()"></span>
+          <span title="refresh sessions" class="k-icon k-i-refresh action-icon" (click)="reloadSessionsList(false)"></span>
+          <!-- </div>-->
+        </td>
+      </tr>
+    </table>
+    <kendo-grid #sessionsGrid [data]="viewSessions | async" [loading]="viewSessions['loading']" [resizable]="true" [pageable]="true"
+      [pageSize]="stateSessions.take" [skip]="stateSessions.skip" [sort]="stateSessions.sort" [sortable]="true" scrollable="none"
+      (dataStateChange)="dataStateChangeSessions($event)" [columnMenu]="true" [filterable]="false" [rowClass]="rowCallback"
+      (columnVisibilityChange)="autoFitColumns()">
+      <kendo-grid-column field="SessionId" title="" [resizable]="false" [sortable]="false" [columnMenu]="false" width="5" [class]="{'statusColumn': true}">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <span></span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="SessionId" title="" [resizable]="false" [sortable]="false" [columnMenu]="false" width="60" [style]="{'text-align': 'left', 'padding-left': '10px', 'padding-right': '0px'}">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <img title="type: {{dataItem.ApplicationCategory}}" class="grid-row-icon" src="./img/{{globalsService.fixApplicationIcon(dataItem.ApplicationIcon, dataItem.ApplicationCategory)}}"
+            alt="">
+          <img title="platform: {{dataItem.SessionType}}" class="grid-row-icon" style="margin-left: 8px;" src="./img/{{getSessionTypeLogo(dataItem)}}"
+            alt="">
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="SessionId" title="Session Id" width="100" [hidden]="true">
+      </kendo-grid-column>
+      <kendo-grid-column field="ServerName" title="Server" width="250">
+      </kendo-grid-column>
+      <!--<kendo-grid-column field="UserName" title="User" width="250">
+      </kendo-grid-column>-->
+      <kendo-grid-column field="UserName" title="User" width="250">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <a title="view user details" target="_blank" [routerLink]="['/user-info', dataItem.UserCode]">
+            {{dataItem.UserName}}
+          </a>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="ApplicationName" title="Application" width="250">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <a title="view application details" target="_blank" [routerLink]="['/app-info', dataItem.PluginCode > 0 ? 'Plugin-' + dataItem.PluginCode.toString() : 'Process-' + dataItem.ProcessCode.toString()]">
+            {{dataItem.ApplicationName}}
+          </a>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="Version" title="Version" width="150">
+      </kendo-grid-column>
+      <kendo-grid-column field="FrameworkVersion" title="Framework" width="180">
+      </kendo-grid-column>
+      <kendo-grid-column field="ErrorsNumber" title="Errors" width="150" type="number" [class]="{'codeColumn': true}">
+      </kendo-grid-column>
+      <kendo-grid-column field="OpenTime" title="Start Time" width="180" type="date" format="{0:dd/MM/yy HH:mm}">
+      </kendo-grid-column>
+      <kendo-grid-column field="LastPingTime" title="Last Ping" width="180" type="date" format="{0:dd/MM/yy HH:mm}" [hidden]="true">
+      </kendo-grid-column>
+      <kendo-grid-column field="CloseTime" title="Close Time" width="180" type="date" format="{0:dd/MM/yy HH:mm}">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <span [hidden]="dataItem.CloseTime == null">{{ datepipe.transform(dataItem.CloseTime, 'dd/MM/yy HH:mm') }}</span>
+          <span [hidden]="dataItem.CloseTime != null" class="status-box {{ isSessionOnline(dataItem) ? 'online' : 'offline'}}">
+            <img style="margin-right: 5px;" src="./img/{{ isSessionOnline(dataItem) ? 'online' : 'offline'}}-circle.svg"><span>{{
+              isSessionOnline(dataItem) ? 'Online' : 'Offline'}}</span>
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="SessionTime" title="Total Time" [sortable]="false" [columnMenu]="true" type="date" width="180"
+        format="{0:HH:mm:ss}">
+      </kendo-grid-column>
+      <kendo-grid-column field="CloseReason" title="Close Reason" [hidden]="true">
+      </kendo-grid-column>
+      <kendo-grid-column field="SessionId" title="" [sortable]="false" [columnMenu]="false" [style]="{'text-align': 'right'}">
+        <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+          <span [hidden]="true" class="status-box {{ isSessionOnline(dataItem) ? 'online' : 'offline'}}">
+            <img src="./img/{{ isSessionOnline(dataItem) ? 'online' : 'offline'}}-circle.svg"><span style="font-size: 10px; line-height: 15px;">{{
+              isSessionOnline(dataItem) ? 'Online' : 'Offline'}}</span>
+          </span>
+          <a target="_blank" [routerLink]="['/session-details', dataItem.SessionId]">
+            <span title="view session details {{isSessionOnline(dataItem) ? '(online)' : ''}}" class="row-action-icon {{isSessionOnline(dataItem) ? 'online' : ''}} k-icon k-i-eye"></span>
+          </a>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </section>
+</div>

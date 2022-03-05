@@ -1,0 +1,1350 @@
+<!--home page-->
+<div class="container-fluid">
+    <section class="global-filters">
+        <form action="">
+            <h3 class="gf-title">Global Filters</h3>
+            <div class="warning">
+                <img src="./assets/images/warning-circle.svg" class="warning-circle" aria-hidden="true" alt="">
+                <h4 class="warning-text">The Global Filters affects all the sections of the ECAD system |</h4>
+                <a href="#" class="more-info">More Information</a>
+            </div>
+            <div class="box filter-box">
+                <div class="container-fluid no-gutters">
+                    <div class="row no-gutters">
+                        <div class="filters-left col-lg-9 col-md-8">
+                            <div class="input-wrap selected-anim with-val">
+                                <kendo-dropdownlist name="time-range" id="time-range" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                                    [(ngModel)]="globalsService.GlobalFilter.TimeRange" [data]="globalsService.GlobalFilter.TimeRangeValues"
+                                    >
+                                </kendo-dropdownlist>
+                                <!--[textField]="timeRange" [valueField]="timeRange"-->
+                                <label for="time-range">Time Range</label>
+                            </div>
+                            <div class="input-wrap" tabindex="1">
+                                <input type="date" required="required" class="supply-date filter-input date-input" id="from-date" name="from-date" [disabled]="globalsService.GlobalFilter.TimeRange != 'Date Range'"
+                                    [(ngModel)]="globalsService.GlobalFilter.FromDate">
+                                <label for="from-date">From Date </label>
+                            </div>
+                            <div class="input-wrap">
+                                <input type="date" required="required" class="supply-date filter-input date-input" id="until-date" name="until-date" [disabled]="globalsService.GlobalFilter.TimeRange != 'Date Range'"
+                                    [(ngModel)]="globalsService.GlobalFilter.ToDate">
+                                <label for="until-date">Until Date</label>
+                            </div>
+                            <div class="input-wrap selected-anim with-val">
+                                <kendo-dropdownlist name="application-name" id="application-name" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                                    [defaultItem]="{Code: '', Name: 'All'}" [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}"
+                                    [popupSettings]="{ width: 400 }" [(ngModel)]="globalsService.GlobalFilter.ApplicationCode"
+                                    [data]="globalsService.findGlobalSetting('FullApplicationsList',[])" [textField]="'Name'"
+                                    [valueField]="'Code'" [valuePrimitive]="true">
+                                </kendo-dropdownlist>
+                                <label for="application-name">Application Name</label>
+                            </div>
+                            <div class="input-wrap selected-anim with-val">
+                                <kendo-dropdownlist name="user" id="user" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns" [defaultItem]="{Code: 0, UserName: 'All'}"
+                                    [kendoDropDownFilter]="{caseSensitive: false, operator: 'contains'}" [(ngModel)]="globalsService.GlobalFilter.UserCode"
+                                    [data]="globalsService.findGlobalSetting('UsersList',[])" [textField]="'UserName'" [valueField]="'Code'"
+                                    [valuePrimitive]="true">
+                                </kendo-dropdownlist>
+                                <label for="user">User</label>
+
+                            </div>
+                            <div class="input-wrap">
+                                <label for="free-text">Free Text</label>
+                                <input type="text" class="free-text filter-input" id="free-text" name="free-text" [(ngModel)]="globalsService.GlobalFilter.FreeText">
+                            </div>
+                        </div>
+                        <div class="filters-right col-lg-3 col-md-4">
+                            <div class="filters-right-wrap">
+                                <ul class="nav nav-pills filter-tabs" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <input type="radio" id="all-tabs" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType == 'All'" (change)="globalsService.GlobalFilter.ChangeApplicationType('All')">
+                                        <label for="all-tabs" class="nav-link"><img src="../assets/images/all-tab.svg" alt="">All
+                                        </label>
+                                    </li>
+                                    <li class="nav-item">
+                                        <input type="radio" id="service-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType == 'Service'" (change)="globalsService.GlobalFilter.ChangeApplicationType('Service')">
+                                        <label for="service-tab" class="nav-link"><img src="../assets/images/service-tab.svg"
+                                                alt=""> Service</label>
+                                    </li>
+                                    <li class="nav-item">
+                                        <input type="radio" id="task-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType == 'Task'" (change)="globalsService.GlobalFilter.ChangeApplicationType('Task')">
+                                        <label for="task-tab" class="nav-link"><img class="task-tab-icon" src="../assets/images/task-tab.svg"
+                                                alt=""> Task
+                                        </label>
+                                    </li>
+                                    <li class="nav-item">
+                                        <input type="radio" id="application-tab" name="pills" [checked]="globalsService.GlobalFilter.ApplicationType == 'Application'"
+                                            (change)="globalsService.GlobalFilter.ChangeApplicationType('Application')">
+                                        <label for="application-tab" class="nav-link"><img src="../assets/images/application-tab.svg"
+                                                alt=""> Application</label>
+                                    </li>
+                                </ul>
+                                <button class="bg-primary apply-btn" type="submit" title="apply settings">APPLY</button>
+
+                                <!-- START - Advanced Fields Modal - START -->
+                                <app-global-filter [screenName]="'home'"></app-global-filter>
+                                <!-- END -  Advanced Fields Modal - END -->
+                            </div>
+                        </div><!-- END .row -->
+                    </div>
+                </div><!-- END .container-fluid -->
+            </div><!-- END .filter-box -->
+        </form>
+    </section><!-- END .global-filters -->
+    <section class="app-list">
+        <div class="container-fluid no-gutters px-0">
+            <div class="row no-gutters">
+                <div class="col-6">
+                    <div class="left-list">
+                        <div class="section-header">
+                            <h3 class="title">My Applications</h3>
+                            <!--<button type="button" class="section-header-btn" title="view all application">VIEW ALL</button>-->
+                        </div>
+                        <div class="my-app-boxes">
+                            <!-- implemintation of simplebar's scroll bar 
+                                  * simple bar is a scroll bar capable of styling, fit for crossbrowser usage -->
+                            <div data-simplebar></div>
+                            <!-- condition area - 
+                                  to dictate app type in div.box add class with: 
+                                  app-type-*
+                                  * can be: 
+                                      - services
+                                      - app
+                                      - task
+                                  to dictate status state in div.box add class with: 
+                                  app-status-*
+                                  * can be: 
+                                      - offline
+                                      - online
+                                      - success
+                              -->
+                            <div class="box box-type-task app-status-offline">
+                                <div class="app-type">
+                                    <div class="wrap type-task-wrap">
+                                        <h4 class="type">Task</h4>
+                                    </div>
+                                    <div class="wrap type-app-wrap">
+                                        <h4 class="type">App</h4>
+                                    </div>
+                                    <div class="wrap type-services-wrap">
+                                        <h4 class="type">Services</h4>
+                                    </div>
+                                    <div class="icons-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-top-wrap">
+                                    <div class="box-header">
+                                        <div class="img-wrap">
+                                            <img class="logo" src="../assets/images/java-test-logo.png" alt="">
+                                        </div>
+                                        <div class="titles-wrap">
+                                            <a title="to this app's info page" href="#" class="title">ECAD Framework Services
+                                                Host
+                                            </a>
+                                            <h5 class="sub-title">Rafael.ECAD.Framework.ServicesHost.exe</h5>
+                                        </div>
+                                    </div>
+                                    <div class="box-content">
+                                        <p class="content-text">
+                                            App Description will be here App Description will be here App Description will be here and App Description will be here App
+                                            Description will be here App Description will be here so this App Description
+                                            will be here
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="footer-content">
+                                        <div class="footer-type-wrap footer-type-task">
+                                            <div class="left-wrap">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Last Run</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Next scheduled</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="success"><img class="checkmark" src="../assets/images/checkmark.svg"
+                                                        aria-hidden="true">Successful</div>
+                                            </div>
+                                            <a href="#" class="app-settings">
+                                                <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                    <div><span class="key">Key #1:</span><span class="val">Value #1</span></div>
+                                                    <div><span class="key">Key #2:</span><span class="val">Value #2</span></div>
+                                                </span>
+                                                <div class="inner-wrap">
+                                                    <div class="circle">
+                                                        <span>1</span>
+                                                    </div>
+
+                                                    <img src="../assets/images/gear-outline.svg" alt="">
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <!-- END .footer-type-task -->
+                                        <div class="footer-type-wrap footer-type-app">
+                                            <div class="status status-success">
+                                                <div class="inner-wrap success">
+                                                    <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                    <p class="status-text">No Errors</p>
+                                                </div>
+                                                <div class="inner-wrap offline">
+                                                    <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Offline</p>
+                                                </div>
+                                                <div class="inner-wrap online">
+                                                    <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Online</p>
+                                                </div>
+                                            </div>
+                                            <div class="dls-wrap">
+                                                <dl class="dl-left">
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="wrap-right">
+                                                    <dl class="dl-right">
+                                                        <div class="data-wrap">
+                                                            <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>TOTAL</span><span>USERS</span></dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>RUNS</dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>ERRORS</span><span>PER RUN</span></dt><dd>3</dd>
+                                                        </div>
+                                                    </dl>
+                                                    <a href="#" class="app-settings" title="to app settings page">
+                                                        <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                            <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                        </span>
+                                                        <div class="inner-wrap">
+                                                            <div class="circle">
+                                                                <span>1</span>
+                                                            </div>
+                                                            <img src="../assets/images/gear-outline.svg" alt="">
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-app -->
+                                        <div class="footer-type-wrap footer-type-services">
+                                            <div class="wrap-left">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Status</dt>
+                                                            <dd class="success">
+                                                                <img src="../assets/images/running.svg" alt="">
+                                                                <span>Running</span>
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                            </div>
+                                            <div class="wrap-right">
+                                                <dl class="dl-right">
+                                                    <div class="data-wrap">
+                                                        <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                    </div>
+                                                </dl>
+                                                <a href="#" class="app-settings" title="to app settings page">
+                                                    <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                        <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                    </span>
+                                                    <div class="inner-wrap">
+                                                        <div class="circle">
+                                                            <span>1</span>
+                                                        </div>
+                                                        <img src="../assets/images/gear-outline.svg" alt="">
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-service -->
+                                    </div>
+                                </div>
+                            </div><!-- END .box -->
+                            <div class="box box-type-app app-status-success">
+                                <div class="app-type">
+                                    <div class="wrap type-task-wrap">
+                                        <h4 class="type">Task</h4>
+                                    </div>
+                                    <div class="wrap type-app-wrap">
+                                        <h4 class="type">App</h4>
+                                    </div>
+                                    <div class="wrap type-services-wrap">
+                                        <h4 class="type">Services</h4>
+                                    </div>
+                                    <div class="icons-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-top-wrap">
+                                    <div class="box-header">
+                                        <div class="img-wrap">
+                                            <img class="logo" src="../assets/images/java-test-logo.png" alt="">
+                                        </div>
+                                        <div class="titles-wrap">
+                                            <a href="#" class="title" title="to this app's info page">ECAD Framework Services
+                                                Host
+                                            </a>
+                                            <h5 class="sub-title">Rafael.ECAD.Framework.ServicesHost.exe</h5>
+                                        </div>
+                                    </div>
+                                    <div class="box-content">
+                                        <p class="content-text">
+                                            App Description will be here App Description will be here App Description will be here and App Description will be here App
+                                            Description will be here App Description will be here so this App Description
+                                            will be here
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="footer-content">
+                                        <div class="footer-type-wrap footer-type-task">
+                                            <div class="left-wrap">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Last Run</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Next scheduled</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="success"><img class="checkmark" src="../assets/images/checkmark.svg"
+                                                        aria-hidden="true">Successful</div>
+                                            </div>
+                                            <a href="#" class="app-settings" title="to app settings page">
+                                                <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                    <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                </span>
+                                                <div class="inner-wrap">
+                                                    <div class="circle">
+                                                        <span>1</span>
+                                                    </div>
+                                                    <img src="../assets/images/gear-outline.svg" alt="">
+                                                </div>
+                                            </a>
+                                        </div><!-- END .footer-type-task -->
+                                        <div class="footer-type-wrap footer-type-app">
+                                            <div class="status status-success">
+                                                <div class="inner-wrap success">
+                                                    <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                    <p class="status-text">No Errors</p>
+                                                </div>
+                                                <div class="inner-wrap offline">
+                                                    <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Offline</p>
+                                                </div>
+                                                <div class="inner-wrap online">
+                                                    <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Online</p>
+                                                </div>
+                                            </div>
+                                            <div class="dls-wrap">
+                                                <dl class="dl-left">
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="wrap-right">
+                                                    <dl class="dl-right">
+                                                        <div class="data-wrap">
+                                                            <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>TOTAL</span><span>USERS</span></dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>RUNS</dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>ERRORS</span><span>PER RUN</span></dt><dd>3</dd>
+                                                        </div>
+                                                    </dl>
+                                                    <a href="#" class="app-settings" title="to app settings page">
+                                                        <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                            <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                        </span>
+                                                        <div class="inner-wrap">
+                                                            <div class="circle">
+                                                                <span>1</span>
+                                                            </div>
+                                                            <img src="../assets/images/gear-outline.svg" alt="">
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-app -->
+                                        <div class="footer-type-wrap footer-type-services">
+                                            <div class="wrap-left">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Status</dt>
+                                                            <dd class="success">
+                                                                <img src="../assets/images/running.svg" alt="">
+                                                                <span>Running</span>
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                            </div>
+                                            <div class="wrap-right">
+                                                <dl class="dl-right">
+                                                    <div class="data-wrap">
+                                                        <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                    </div>
+                                                </dl>
+                                                <a href="#" class="app-settings" title="to app settings page">
+                                                    <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                        <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                    </span>
+                                                    <div class="inner-wrap">
+                                                        <div class="circle">
+                                                            <span>1</span>
+                                                        </div>
+                                                        <img src="../assets/images/gear-outline.svg" alt="">
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-service -->
+                                    </div>
+                                </div>
+                            </div><!-- END .box -->
+                            <div class="box box-type-services app-status-online">
+                                <div class="app-type">
+                                    <div class="wrap type-task-wrap">
+                                        <h4 class="type">Task</h4>
+                                    </div>
+                                    <div class="wrap type-app-wrap">
+                                        <h4 class="type">App</h4>
+                                    </div>
+                                    <div class="wrap type-services-wrap">
+                                        <h4 class="type">Services</h4>
+                                    </div>
+                                    <div class="icons-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-top-wrap">
+                                    <div class="box-header">
+                                        <div class="img-wrap">
+                                            <img class="logo" src="../assets/images/java-test-logo.png" alt="">
+                                        </div>
+                                        <div class="titles-wrap">
+                                            <a title="to this app's info page" href="#" class="title">ECAD Framework Services
+                                                Host
+                                            </a>
+                                            <h5 class="sub-title">Rafael.ECAD.Framework.ServicesHost.exe</h5>
+                                        </div>
+                                    </div>
+                                    <div class="box-content">
+                                        <p class="content-text">
+                                            App description here lorem ipsum dolor sit amet, consectetur adipiscing elit. In lectus mi,ultrices non aliquam quis, tincidunt
+                                            congue odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+                                            ac ante ipsum. Morbi non sem arcu. Vestibulum at leo arcu. Phasellus ante leo,
+                                            varius id fringilla id, scelerisque at nibh. Proin lobortis rhoncus metus, eu
+                                            mattis mi pellentesque id. Duis gravida odio eget mi molestie porttitor. Ut consectetur
+                                            feugiat mi tempus vehicula. Nunc eu lacinia nisl. Maecenas nulla ligula, porta
+                                            et iaculis eu, efficitur sed libero.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="box-footer">
+                                    <div class="footer-content">
+                                        <div class="footer-type-wrap footer-type-task">
+                                            <div class="left-wrap">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Last Run</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Next scheduled</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="success"><img class="checkmark" src="../assets/images/checkmark.svg"
+                                                        aria-hidden="true">Successful</div>
+                                            </div>
+                                            <a href="#" class="app-settings" title="to app settings page">
+                                                <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                    <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                </span>
+                                                <div class="inner-wrap">
+                                                    <div class="circle">
+                                                        <span>1</span>
+                                                    </div>
+
+                                                    <img src="../assets/images/gear-outline.svg" alt="">
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <!-- END .footer-type-task -->
+                                        <div class="footer-type-wrap footer-type-app">
+                                            <div class="status status-success">
+                                                <div class="inner-wrap success">
+                                                    <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                    <p class="status-text">No Errors</p>
+                                                </div>
+                                                <div class="inner-wrap offline">
+                                                    <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Offline</p>
+                                                </div>
+                                                <div class="inner-wrap online">
+                                                    <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                    <p class="status-text">Online</p>
+                                                </div>
+                                            </div>
+                                            <div class="dls-wrap">
+                                                <dl class="dl-left">
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <div class="wrap-right">
+                                                    <dl class="dl-right">
+                                                        <div class="data-wrap">
+                                                            <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>TOTAL</span><span>USERS</span></dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>RUNS</dt><dd>23</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt><span>ERRORS</span><span>PER RUN</span></dt><dd>3</dd>
+                                                        </div>
+                                                    </dl>
+                                                    <a href="#" class="app-settings" title="to app settings page">
+                                                        <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                            <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                        </span>
+                                                        <div class="inner-wrap">
+                                                            <div class="circle">
+                                                                <span>1</span>
+                                                            </div>
+                                                            <img src="../assets/images/gear-outline.svg" alt="">
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-app -->
+                                        <div class="footer-type-wrap footer-type-services">
+                                            <div class="wrap-left">
+                                                <div class="status status-success">
+                                                    <div class="inner-wrap success">
+                                                        <img src="../assets/images/check-mark.svg" alt="" class="logo">
+                                                        <p class="status-text">No Errors</p>
+                                                    </div>
+                                                    <div class="inner-wrap offline">
+                                                        <img src="../assets/images/offline-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Offline</p>
+                                                    </div>
+                                                    <div class="inner-wrap online">
+                                                        <img src="../assets/images/online-bar.svg" alt="" class="logo">
+                                                        <p class="status-text">Online</p>
+                                                    </div>
+                                                </div>
+                                                <dl>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Version</dt><dd>1.1.125</dd>
+                                                        </div>
+                                                        <div class="data-wrap">
+                                                            <dt>Created</dt><dd>03/04/2018 12:28</dd>
+                                                        </div>
+                                                    </div>
+                                                    <div class="inner-dl-wrap">
+                                                        <div class="data-wrap">
+                                                            <dt>Status</dt>
+                                                            <dd class="success">
+                                                                <img src="../assets/images/running.svg" alt="">
+                                                                <span>Running</span>
+                                                            </dd>
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                            </div>
+                                            <div class="wrap-right">
+                                                <dl class="dl-right">
+                                                    <div class="data-wrap">
+                                                        <dt><span>ACTIVE</span><span>USERS</span></dt><dd>5</dd>
+                                                    </div>
+                                                </dl>
+                                                <a href="#" class="app-settings" title="to app settings page">
+                                                    <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                        <span class="key">Key #1:</span><span class="val">Value #1</span>
+                                                    </span>
+                                                    <div class="inner-wrap">
+                                                        <div class="circle">
+                                                            <span>1</span>
+                                                        </div>
+                                                        <img src="../assets/images/gear-outline.svg" alt="">
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <!-- END .footer-type-service -->
+                                    </div>
+                                </div>
+                            </div><!-- END .box -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="right-list">
+                        <div class="section-header">
+                            <h3 class="title">Users of My Applications</h3>
+                            <button type="button" class="section-header-btn">VIEW ALL</button>
+                        </div>
+                        <div class="user-app-boxes">
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">Yarden Swiss</a>
+                                        <p class="department">Department 1</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">Sakura San</a>
+                                        <p class="department">Department 2</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">Ella Refaeli</a>
+                                        <p class="department">Department 1</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">John Depsey</a>
+                                        <p class="department">Department 2</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">Ella Refaeli</a>
+                                        <p class="department">Department 1</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">John Depsey</a>
+                                        <p class="department">Department 2</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">Ella Refaeli</a>
+                                        <p class="department">Department 1</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box user-box user-online">
+                                <div class="user-wrap">
+                                    <div class="user-status">
+                                        <div class="wrap offline">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Offline</p>
+                                            </div>
+                                        </div>
+                                        <div class="wrap online">
+                                            <img src="../assets/images/user-placeholder.svg" alt="" class="user-img">
+                                            <div class="status">
+                                                <img src="../assets/images/online-bar.svg" alt="" aria-hidden="true" class="bar">
+                                                <p class="status-text">Online</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="user-info">
+                                        <a href="#" class="name" title="to user info page">John Depsey</a>
+                                        <p class="department">Department 2</p>
+                                    </div>
+                                </div>
+                                <dl>
+                                    <div class="data-wrap">
+                                        <dt><span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>23</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>MACHINES</span></dt><dd>2</dd>
+                                    </div>
+                                    <div class="data-wrap">
+                                        <dt><span>FAILURES</span></dt><dd>4</dd>
+                                    </div>
+                                </dl>
+                                <div class="icons-wrap">
+                                    <div class="icons-inner-wrap">
+                                        <button class="star-icon" title="Add to favorites"> <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Add to favorites
+                                            </span>
+                                        </button>
+                                        <a href="#" class="mail-icon" title="Send mail to users">
+                                            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+                                                Send mail to users
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- END .app-list -->
+    <section class="last-sessions">
+        <div class="container-fluid no-gutters px-0">
+            <div class="section-header">
+                <h3 class="title">Last Sessions Of My Applications</h3>
+                <button type="button" class="section-header-btn">VIEW ALL</button>
+            </div>
+            <!-- temporary placeholder, until implementation of telerik -->
+            <div class="box section-placeholder" style=" height: 675px;">
+            </div>
+        </div>
+    </section><!-- END .last-sessions -->
+    <section class="activity">
+        <div class="container-fluid no-gutters px-0">
+            <div class="box activity-box">
+                <div class="activity-box-wrap">
+                    <div class="wrap-left">
+                        <h3 href="#" class="title">Exceptional Recent Activity</h3>
+                        <div class="activities">
+                            <div class="activity-wrap">
+                                <div class="img-wrap">
+                                    <img class="logo" src="../assets/images/java-test-logo.png" alt="">
+                                </div>
+                                <div class="inner-wrap">
+                                    <a href="#" class="activity-title">ECAD Framework Services</a>
+                                    <p class="sessions">154 Sessions/Day</p>
+                                    <p class="percentage">
+                                        <span class="num">
+                                            <img src="../assets/images/down-arrow.svg" alt="">13.8%
+                                        </span>
+                                        <span> From Previous week</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="activity-wrap">
+                                <div class="img-wrap">
+                                    <img class="logo" src="../assets/images/user-placeholder.svg" alt="">
+                                </div>
+                                <div class="inner-wrap">
+                                    <a href="#" class="activity-title">Jameson Dempsy</a>
+                                    <p class="sessions">154 Sessions/Day</p>
+                                    <p class="percentage">
+                                        <span class="num">
+                                            <img src="../assets/images/down-arrow.svg" alt="">13.8%
+                                        </span>
+                                        <span> From Previous week</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wrap-right">
+                        <h3 class="title">Exceptional statistics</h3>
+                        <div class="inner-wrap">
+                            <dl>
+                                <div class="data-wrap">
+                                    <dt>average application session time</dt><dd>2.55</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt>active users</dt><dd>258</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt>Offline Applications</dt><dd>2</dd>
+                                </div>
+                                <div class="data-wrap">
+                                    <dt>Connected Applications</dt><dd>23</dd>
+                                </div>
+                            </dl>
+                            <div class="statistics-graph"> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- END .activity -->
+    <section>
+        <kendo-grid [data]="gridData" [height]="610" [pageable]="true" [pageSize]="10">
+            <kendo-grid-column field="ProductID" title="ID" width="40">
+            </kendo-grid-column>
+            <kendo-grid-column field="ProductName">
+                <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                    Row: {{rowIndex}} /
+                    <strong>{{dataItem.ProductName}}</strong>
+                    <span class="{{dataItem.Discontinued ? 'discontinued' : 'active'}}">
+                        {{dataItem.Discontinued ? "discontinued" : "active"}}
+                    </span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column field="Category.CategoryName" title="Category">
+            </kendo-grid-column>
+            <kendo-grid-column field="UnitPrice" title="Price" width="80">
+            </kendo-grid-column>
+            <kendo-grid-column field="UnitsInStock" title="In stock" width="80">
+            </kendo-grid-column>
+            <kendo-grid-column field="Discontinued" title="Discontinued" width="120">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <input type="checkbox" [checked]="dataItem.Discontinued" />
+                </ng-template>
+            </kendo-grid-column>
+        </kendo-grid>
+    </section>
+    <hr/>
+    <section>
+            <div>Logs List</div>
+        <kendo-grid [data]="viewLogs | async" [loading]="viewLogs['loading']" [resizable]="true" [pageable]="true" [pageSize]="stateLogs.take"
+            [skip]="stateLogs.skip" [sort]="stateLogs.sort" [sortable]="true" scrollable="none" (dataStateChange)="dataStateChangeLogs($event)">
+            <kendo-grid-column field="RecordId" title="Record Id" width="150">
+            </kendo-grid-column>
+            <kendo-grid-column field="ProcessName" title="Process Name" width="200">
+            </kendo-grid-column>
+            <kendo-grid-column field="CreateTime" title="Create Time" type="date" format="{0:dd/MM/yy HH:mm}">
+                </kendo-grid-column>
+
+        </kendo-grid>
+        <div><button (click)="refreshdataLogs()">refresh Logs</button></div>
+    </section>
+    <hr/>
+    <section>
+        <div>Sessions List</div>
+        <kendo-grid [data]="viewSessions | async" [loading]="viewSessions['loading']" [resizable]="true" [pageable]="true" [pageSize]="stateSessions.take"
+            [skip]="stateSessions.skip" [sort]="stateSessions.sort" [sortable]="true" scrollable="none" (dataStateChange)="dataStateChangeSessions($event)">
+            <kendo-grid-column field="SessionId" title="Session Id" width="100">
+            </kendo-grid-column>
+            <kendo-grid-column field="ProcessName" title="Process Name" width="100">
+            </kendo-grid-column>
+            <kendo-grid-column field="OpenTime" title="Open Time" width="150" type="date" format="{0:dd/MM/yy HH:mm}">
+            </kendo-grid-column>
+            <kendo-grid-column field="ApplicationCategory" title="Category" width="100">
+            </kendo-grid-column>
+
+        </kendo-grid>
+        <div><button (click)="refreshdataSessions()">refresh Sessions</button></div>
+    </section>
+    <hr/>
+    <section>
+            <kendo-chart [categoryAxis]="{ categories: categories }">
+                    <kendo-chart-title text="Gross domestic product growth /GDP annual %/"></kendo-chart-title>
+                    <kendo-chart-legend position="bottom" orientation="horizontal"></kendo-chart-legend>
+                    <kendo-chart-tooltip format="{0}%"></kendo-chart-tooltip>
+                    <kendo-chart-series>
+                        <kendo-chart-series-item *ngFor="let item of series"
+                            type="line" [data]="item.data" [name]="item.name">
+                        </kendo-chart-series-item>
+                    </kendo-chart-series>
+                </kendo-chart>
+    </section>
+    <hr/>
+    <section>
+            <kendo-chart>
+                    <kendo-chart-axis-defaults
+                        [majorGridLines]="{visible: false}"
+                        [minorGridLines]="{visible: false}"
+                    ></kendo-chart-axis-defaults>
+                    <kendo-chart-title text="Units sold"></kendo-chart-title>
+                    <kendo-chart-category-axis>
+                        <kendo-chart-category-axis-item [categories]="['Q1', 'Q2', 'Q3', 'Q4']">
+                        </kendo-chart-category-axis-item>
+                    </kendo-chart-category-axis>
+                    <kendo-chart-series>
+                      <kendo-chart-series-item type="column" [color]="'#01579B'" [gap]="2" [spacing]=".25" [data]="[100, 123, 234, 343]">
+                      </kendo-chart-series-item>
+                      <kendo-chart-series-item type="column" [data]="[120, 67, 231, 196]">
+                      </kendo-chart-series-item>
+                      <kendo-chart-series-item type="column" [data]="[45, 124, 189, 143]">
+                      </kendo-chart-series-item>
+                      <kendo-chart-series-item type="column" [data]="[87, 154, 210, 215]">
+                      </kendo-chart-series-item>
+                    </kendo-chart-series>
+                  </kendo-chart>
+    </section>
+</div>

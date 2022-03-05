@@ -1,0 +1,125 @@
+/* You can add global styles to this file, and also import other style files */
+.k-dropdown-wrap {
+    border: none !important;
+}
+
+.kendo-dropdowns{
+    padding-left: 0px;
+    width: 225px;
+}
+
+.k-dropdown-wrap>.k-input {
+    padding-left: 10px !important;
+    padding-top: 15px !important;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.k-grid-header tr{
+    background-color: white !important;
+}
+
+.k-grid-header tr th{
+    line-height: 24px !important;
+    height: 44px !important;
+    vertical-align: middle !important;
+}
+
+.k-grid-header tr th a{
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+}
+
+.k-grid-header .k-header>.k-link {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.k-grid td{
+   font-size: 14px !important;
+   font-family: 'Assistant', sans-serif !important;
+   height: 35px !important;
+}
+
+.k-grid-header .k-grid-filter, .k-grid-header .k-header-column-menu {
+    top: 2px !important;
+}
+
+.k-grid-header{
+    font-size: 16px !important;
+    font-family: 'Assistant', sans-serif !important;
+    font-weight: bold !important;
+}
+
+.k-grid th, .k-grid td {
+    padding-bottom: 3px !important;
+    padding-top: 3px !important;
+}
+
+// session row background color (odd = online)
+.k-grid tr { line-height: 20px; }
+/*.k-grid tr.even { background-color: white; }
+.k-grid tr.odd { background-color: #3EB75E; }*/
+
+.k-grid tr:hover {
+    background-color: white !important;
+}
+
+/*
+.k-grid tr.even:hover {
+    background-color: white !important;
+}
+
+.k-grid tr.odd:hover {
+    background-color: #3EB75E !important;
+}
+*/
+
+span.k-picker-wrap{
+    border: none !important;
+}
+
+// cell class - with/without errors
+.error .codeColumn { 
+    background-color:#ff6666; 
+    color: white;
+}
+
+// cell class - online/offline
+.online .statusColumn { 
+    background-color:#3EB75E; 
+}
+
+.Service .statusColumn{
+    background-color: #D19B75 !important;
+}
+
+.Task .statusColumn{
+    background-color: #07B4AE !important;
+}
+
+.Plugin .statusColumn{
+    background-color: rgb(30, 144, 255) !important;
+}
+
+.Application .statusColumn{
+    background-color: #787ED1 !important;
+}
+
+.inner-box-title{
+    color: black !important;
+}
+
+.Error .codeColumn, .ErrorEntry .codeColumn, .inner-box-title.Error, .inner-box-title.ErrorEntry  { 
+    color: #ff6666 !important;
+    background-color: white !important;
+}
+
+.Warning .codeColumn, .inner-box-title.Warning { 
+    color: orange !important;
+    background-color: white !important;
+}
+
+

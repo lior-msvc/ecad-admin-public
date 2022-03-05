@@ -1,0 +1,6 @@
+{
+    "apiBaseUrl": "http://localhost:51566", 
+    "version": "1.0.0",
+    "environment": "Production",
+    "admins_list": "LIOR-T470S\\Lior"
+}

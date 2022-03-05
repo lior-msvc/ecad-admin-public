@@ -1,0 +1,108 @@
+<div class="modal fade config-entry-modal" id="config-entry-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editMetadataModal">Edit Application Config</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="close window">
+          <span aria-hidden="true">X</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <section class="configs-new-section">
+          <form action="">
+            <div class="box config-edit-box">
+              <div class="top-inputs">
+                <div class="input-wrap" style="width: 250px !important;">
+                  <label for="group-select">Group</label>
+                  <input type="text" [(ngModel)]="appConfigEntry.ConfigGroup" class="filter-input" name="group-select" id="group-select" />
+                </div>
+                <div class="input-wrap" style="width: 250px !important;">
+                  <label for="key-select">Key</label>
+                  <input type="text" [(ngModel)]="appConfigEntry.ConfigKey" class="filter-input" (keyup)="isValid_KeyField = true" (click)="isValid_KeyField = true" [ngClass]="{'invalid': !isValid_KeyField }" name="key-select" id="key-select" />
+                </div>
+              </div>
+              <div class="bottom-inputs">
+                <div class="left-inputs">
+                  <div class="input-wrap textarea-wrap">
+                    <label for="value">Value</label>
+                    <textarea name="value" [(ngModel)]="appConfigEntry.ConfigValue" class="filter-input config-textarea" id="value" cols="30" (keyup)="isValid_ValueField = true" (click)="isValid_ValueField = true" [ngClass]="{'invalid': !isValid_ValueField }"
+                      rows="10">Value #1.X</textarea>
+                  </div>
+                  <div class="input-wrap textarea-wrap">
+                    <label for="configDescription">Description</label>
+                    <textarea name="configDescription" [(ngModel)]="appConfigEntry.ConfigDescription" class="filter-input config-textarea" id="configDescription"
+                      cols="30" rows="10"></textarea>
+                  </div>
+                </div>
+                <div class="right-inputs" style="max-width: 450px;">
+                  <div class="right-inner-wrap">
+                    <div class="inner-wrap" style="width: 300px;">
+                      <ul class="nav nav-pills filter-tabs configs-tabs activity-tabs" id="pills-tab" role="tablist" style="max-width:300px;">
+                        <li class="nav-item">
+                          <input type="radio" id="active-tabs" name="status" value="1" [disabled]="appConfigEntry.RecordId == 0" [(ngModel)]="appConfigEntry.Status">
+                          <label for="active-tabs" class="nav-link left-tab">ACTIVE
+                          </label>
+                        </li>
+                        <li class="nav-item">
+                          <input type="radio" id="inactive-tab" name="status" value="0" [disabled]="appConfigEntry.RecordId == 0" [(ngModel)]="appConfigEntry.Status">
+                          <label for="inactive-tab" class="nav-link right-tab">INACTIVE</label>
+                        </li>
+                      </ul>
+                      <div class="input-wrap selected-anim with-val">
+                        <kendo-dropdownlist name="modal-server" id="modal-server" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                          [defaultItem]="{Code: 0, ServerName: 'All'}" [(ngModel)]="appConfigEntry.ServerCode" [data]="globalsService.findGlobalSetting('ServersList',[])"
+                          [textField]="'ServerName'" [valueField]="'Code'" [valuePrimitive]="true" style="width: 300px;" [popupSettings]="{ width: 300 }">
+                        </kendo-dropdownlist>
+                        <label for="modal-server">Server</label>
+                      </div>
+                      <div class="input-wrap selected-anim with-val">
+                        <kendo-dropdownlist name="modal-user" id="modal-user" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                          [defaultItem]="{Code: 0, UserName: 'All'}" [(ngModel)]="appConfigEntry.UserCode" [data]="globalsService.findGlobalSetting('UsersList',[])"
+                          [textField]="'UserName'" [valueField]="'Code'" [valuePrimitive]="true" style="width: 300px;" [popupSettings]="{ width: 300 }">
+                        </kendo-dropdownlist>
+                        <label for="modal-user">User</label>
+                      </div>
+                    </div>
+                    <div class="inner-wrap" style="width: 300px;">
+                      <ul class="nav nav-pills filter-tabs configs-tabs" id="pills-tab" role="tablist" style="max-width:300px;">
+                        <li class="nav-item">
+                          <input type="radio" id="global-tabs" name="is-global" value="1" (change)="changeGlobalOrSpecific()" [disabled]="appConfigEntry.RecordId > 0" [(ngModel)]="appConfigEntry.IsGlobal">
+                          <label for="global-tabs" class="nav-link left-tab">GLOBAL
+                          </label>
+                        </li>
+                        <li class="nav-item">
+                          <input type="radio" id="specific-tab" name="is-global" value="0" (change)="changeGlobalOrSpecific()" [disabled]="appConfigEntry.RecordId > 0" [(ngModel)]="appConfigEntry.IsGlobal">
+                          <label for="specific-tab" class="nav-link right-tab">SPECIFIC</label>
+                        </li>
+                      </ul>
+                      <div class="input-wrap selected-anim with-val">
+                        <kendo-dropdownlist name="modal-application" id="modal-application" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                          [defaultItem]="{Code: 0, ApplicationName: 'All'}" [(ngModel)]="appConfigEntry.ProcessCode" [data]="globalsService.findGlobalSetting('ApplicationsList',[])"
+                          [textField]="'ApplicationName'" [valueField]="'Code'" [valuePrimitive]="true" style="width: 300px;"
+                          [popupSettings]="{ width: 300 }" [disabled]="appConfigEntry.RecordId > 0 || appConfigEntry.IsGlobal =='1'">
+                        </kendo-dropdownlist>
+                        <label for="modal-application">Application</label>
+                      </div>
+                      <div class="input-wrap selected-anim with-val">
+                        <kendo-dropdownlist name="modal-plugin" id="modal-plugin" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                          [defaultItem]="{Code: 0, PluginName: 'All'}" [(ngModel)]="appConfigEntry.PluginCode" [data]="globalsService.findGlobalSetting('PluginsList',[])"
+                          [textField]="'PluginName'" [valueField]="'Code'" [valuePrimitive]="true" style="width: 300px;"
+                          [popupSettings]="{ width: 300 }" [disabled]="appConfigEntry.RecordId > 0 || appConfigEntry.IsGlobal =='1'">
+                        </kendo-dropdownlist>
+                        <label for="modal-plugin">Plugin</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-footer-btn reset-btn" data-dismiss="modal">CANCEL</button>
+        <button type="button" class="modal-footer-btn apply-btn" (click)="updateAppConfigEntry()" >SAVE</button>
+      </div>
+    </div>
+  </div>
+</div>

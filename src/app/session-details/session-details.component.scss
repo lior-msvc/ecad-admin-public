@@ -1,0 +1,135 @@
+.sessions-details .app-sessions-box {
+    justify-content: normal !important;
+}
+
+.sessions-details .app-sessions-box .apps-session-dl {
+    justify-content: normal !important;
+}
+
+.sessions-details .data-wrap {
+    width: auto !important;
+    margin-right: 50px !important;
+}
+
+.sessions-details .data-wrap dd {
+    white-space: nowrap !important;
+}
+
+.box.app-sessions-box{
+    padding-bottom: 0px !important;
+}
+
+.sec1 .data-wrap dt{
+    width: 60px !important;
+}
+
+.sec3 .data-wrap dt{
+    width: 80px !important;
+}
+
+.sec4 .data-wrap dt{
+    width: 120px !important;
+}
+
+.sec5 .data-wrap dt{
+    width: 180px !important;
+}
+
+dl.active-users{
+    margin-top: 15px;
+}
+
+.sec5{
+    margin-left: 50px;
+}
+
+.sessions-details .app-sessions-box .apps-session-dl .data-wrap dd {
+    font-size: 14px !important;
+    line-height: 14px !important;
+}
+
+.col-appconfig-entry{
+    text-align: left !important;
+    padding-left: 15px !important;
+    word-wrap: break-word;
+}
+
+.col-appconfig-entry.record-id{
+    max-width: 90px;
+}
+
+div.filters-left{
+    display: flex;
+}
+
+.action-icons{
+    position: absolute;
+    right: 25px;
+}
+
+.action-icons span{
+    padding-top: 5px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #01579B;
+    margin-left: 5px;
+}
+
+.log-level-icon{
+    margin-right: 5px;
+}
+
+.view-entry-details:hover{
+    text-decoration: underline;
+}
+
+.row-action-icon{
+    font-size: 22px;
+    color: #01579B;
+    
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.error-entry-info-dl .data-wrap dd, .error-entry-info-dl .data-wrap dd p, .error-entry-info-dl .data-wrap dd{
+    white-space: normal !important;
+}
+
+.sessions-details .title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #01579B !important;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.inner-box-title .log-level-icon{
+    font-size: 22px !important;
+    margin-right: 0px !important;
+    vertical-align: baseline !important;
+}
+
+.extra-data-key{
+    width: 1%; white-space: nowrap;
+}
+
+.extra-data-value{
+    width: 99%; white-space: normal !important;
+}
+
+.sessions-details .top-error-entry-box .right-wrap .error-entry-dl .data-wrap {
+    margin-bottom: 5px !important;
+    padding-top: 5px;
+}
+
+.sessions-details .top-error-entry-box .left-wrap {
+    margin-right: 50px !important;
+}
+
+.left-wrap{
+    min-width: 170px !important;
+}
+

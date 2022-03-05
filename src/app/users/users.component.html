@@ -1,0 +1,167 @@
+<div class="container-fluid">
+  <section class="global-filters">
+    <form action="">
+      <h3 class="gf-title">Users Filters</h3>
+      <div class="box filter-box">
+        <div class="container-fluid no-gutters">
+          <div class="row no-gutters">
+            <div class="filters-left col-sm-12">
+              <div class="input-wrap selected-anim with-val">
+                <kendo-dropdownlist name="time-range" id="time-range" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                  [(ngModel)]="globalsService.GlobalFilter.TimeRange_Users" [data]="['', 'Today', 'This Month', 'All']" (valueChange)="reloadUsersStatistics()">
+                </kendo-dropdownlist>
+                <label for="time-range">Time Range</label>
+              </div>
+
+              <div class="input-wrap" title="free text search on user name">
+                <label for="free-text">Free Text Search</label>
+                <input type="text" class="free-text filter-input" id="free-text" name="free-text" (ngModelChange)="onFreeTextChange($event)" [(ngModel)]="freeTextSearch">
+              </div>
+
+              <div class="checkbox-input custom-control custom-checkbox" title="show online users only" style="padding-left: 0px; width: auto;">
+                <input type="checkbox" class="custom-control-input cursor-pointer" [(ngModel)]="globalsService.GlobalFilter.OnlineUsersOnly"
+                  (change)="applyFilters()" [ngModelOptions]="{standalone: true}" id="cb-online-only" aria-label="show only online users">
+                <label class="custom-control-label cursor-pointer" for="cb-online-only">Only Online Users</label>
+              </div>
+
+              <div class="checkbox-input custom-control custom-checkbox" title="show only users with actual activity for the selected time range" style="padding-left: 30px; width: auto;">
+                  <input type="checkbox" class="custom-control-input cursor-pointer" [(ngModel)]="globalsService.GlobalFilter.OnlyUsersWithActivity"
+                    (change)="applyFilters()" [ngModelOptions]="{standalone: true}" id="cb-activity-only" aria-label="show only users with actual activity for the selected time range">
+                  <label class="custom-control-label cursor-pointer" for="cb-activity-only">Only With Activity</label>
+                </div>
+
+              <div class="checkbox-input custom-control action-icons" style="width: auto; position: absolute; right: 20px;">
+                <span title="refresh users data" class="k-icon k-i-refresh action-icon" (click)="reloadUsersStatistics()"></span>
+              </div>
+            </div>
+          </div>
+        </div><!-- END .container-fluid -->
+      </div><!-- END .filter-box -->
+    </form>
+  </section><!-- END .global-filters -->
+
+  <section class="list-page users">
+    <div class="my-app-boxes my-boxes">
+      <div class="apps-view-mode1">
+        <div class="container-fluid no-gutters">
+
+          <!--logic for supporting 2 columns-->
+          <div *ngFor="let idx of usersStatisticsIndexes ; let index=idx; let odd=odd; let last=last; let first=first ; let even=even">
+
+            <div *ngIf="(first && last) || (even && last)">
+              <div class="row no-gutters">
+                <div class="col-6">
+                  <ng-container *ngTemplateOutlet="userStatisticsBox; context: {index: idx}"></ng-container>
+                </div>
+                <div class="col-6">
+                  <!--no second column-->
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="even && !last">
+              <div class="row no-gutters">
+                <div class="col-6">
+                  <ng-container *ngTemplateOutlet="userStatisticsBox; context: {index: idx}"></ng-container>
+                </div>
+                <div class="col-6">
+                  <ng-container *ngTemplateOutlet="userStatisticsBox; context: {index: (idx + 1)}"></ng-container>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- END .row -->
+      <div class="apps-view-mode2">
+        <div class="box"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!--user box template-->
+<ng-template #userStatisticsBox let-index="index">
+  <div class="box user-box user-{{ usersStatisticsWithFilters[index].ActiveSessionsNumber > 0 ? 'online' : 'offline'}}">
+    <div class="top-wrap">
+      <div class="user-wrap">
+        <div class="user-status">
+          <img src="./img/user-placeholder.svg" alt="" class="user-img">
+          <div class="wrap offline">
+
+            <div class="status">
+              <img src="./img/offline-bar.svg" alt="" aria-hidden="true" class="bar">
+              <p class="status-text">Offline</p>
+            </div>
+          </div>
+          <div class="wrap online">
+
+            <div class="status">
+              <img src="./img/online-bar.svg" alt="" aria-hidden="true" class="bar">
+              <p class="status-text">Online</p>
+            </div>
+          </div>
+        </div>
+        <div class="user-info">
+          <!--<a href="#" class="name" title="to user info page">{{ usersStatisticsWithFilters[index].Properties.English_FullName == null ? (usersStatisticsWithFilters[index].UserDomain + '\\' + usersStatisticsWithFilters[index].UserName) : usersStatisticsWithFilters[index].Properties.English_FullName }}</a>-->
+          <a class="name" [routerLink]="['/user-info', usersStatisticsWithFilters[index].Code]" title="view user details page">
+            {{ usersStatisticsWithFilters[index].UserDomain + '\\' + usersStatisticsWithFilters[index].UserName }}
+          </a>
+          <p class="department">Activity time: {{ datepipe.transform(usersStatisticsWithFilters[index].StartActivityDate, 'yyyy-MM-dd') }} - {{ datepipe.transform(usersStatisticsWithFilters[index].LastActivityDate, 'yyyy-MM-dd') }}</p>
+        </div>
+      </div>
+      <dl>
+        <div class="data-wrap" title="unique apps number">
+          <dt><span>APPS</span></dt><dd>{{usersStatisticsWithFilters[index].UniqueAppsNumber}}</dd>
+        </div>
+        <div class="data-wrap">
+          <dt><span>ACTIVE</span> <span>APPS</span></dt><dd>{{usersStatisticsWithFilters[index].ActiveSessionsNumber}}</dd>
+        </div>
+        <div class="data-wrap">
+          <dt><span>MACHINES</span></dt><dd>{{usersStatisticsWithFilters[index].UniqueServersNumber}}</dd>
+        </div>
+        <div class="data-wrap">
+          <dt><span>ERRORS</span></dt><dd>{{usersStatisticsWithFilters[index].TotalErrorsNumber}}</dd>
+        </div>
+      </dl>
+      <div class="icons-wrap">
+        <div class="icons-inner-wrap">
+          <a href="#" class="mail-icon">
+            <span class="ecad-tooltip ecad-tooltip-bottom tooltip-slide-left">
+              Send mail to users
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class=" bottom-wrap">
+      <div class="inner-wrap">
+        <dl>
+          <div class="data-wrap">
+            <dd>{{usersStatisticsWithFilters[index].Properties.English_FullName == null ? '-' : (usersStatisticsWithFilters[index].Properties.English_FullName + ' / ' + usersStatisticsWithFilters[index].Properties.Hebrew_FullName) }}</dd>
+            <dt>FULL NAME</dt>
+          </div>
+          <div class="data-wrap">
+            <dd>{{usersStatisticsWithFilters[index].Properties.Full_TelephoneNumber == null ? '-' : usersStatisticsWithFilters[index].Properties.Full_TelephoneNumber}}</dd>
+            <dt>PHONE</dt>
+          </div>
+          <div class="data-wrap">
+            <dd>{{usersStatisticsWithFilters[index].Properties.Short_TelephoneNumber == null ? '-' : usersStatisticsWithFilters[index].Properties.Short_TelephoneNumber}}</dd>
+            <dt>PHONE 2</dt>
+          </div>
+          <div class="data-wrap">
+            <dd><a class="mail" href="mailto:{{usersStatisticsWithFilters[index].Properties.Email}}">{{usersStatisticsWithFilters[index].Properties.Email
+                == null ? '-' : usersStatisticsWithFilters[index].Properties.Email}}</a></dd><dt>EMAIL</dt>
+          </div>
+        </dl>
+        <!--<div class="sessions-per-day">
+          <h4 class="caps-title">SESSIONS/DAY</h4>
+          <div class="stats"></div>
+        </div>-->
+      </div>
+      <div class="to-user">
+        <a class="to-user" [routerLink]="['/user-info', usersStatisticsWithFilters[index].Code]" title="view user details page">TO THE USER PAGE</a>
+      </div>
+    </div>
+  </div><!-- END .box -->
+</ng-template>

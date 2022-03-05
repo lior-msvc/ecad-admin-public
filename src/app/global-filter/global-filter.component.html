@@ -1,0 +1,211 @@
+<!-- START - Advanced Fields Button - START -->
+<button *ngIf="screenName == 'home'" type="button" class="link-btn" id="advanced-fields-btn" data-toggle="modal" data-target="#advanced-fields" title="open advanced fields modal">
+  + ADVANCED FIELDS
+</button>
+<!-- END -  Advanced Fields Button - END -->
+
+<!-- START - Advanced Fields Header - START -->
+<div *ngIf="(screenName != 'home' && screenName != 'app')" class="box filter-bar">
+  <div class="applied-filters">
+      <h3 class="title">Global Filters:</h3>
+      <div class="filter">
+          <p class="filter-text">Time Range: Last Week</p>
+          <button type="button" class="cancel-filter"></button>
+      </div>
+      <div class="filter">
+          <p class="filter-text">Category: Plugins</p>
+          <button type="button" class="cancel-filter"></button>
+      </div>
+  </div>
+  <div class="btns-wrap">
+      <button type="button" class="gf-btn add-btn" id="advanced-fields-btn" data-toggle="modal" data-target="#advanced-fields">+ ADD/EDIT</button>
+      <button type="button" class="gf-btn reset-btn" (click)="resetFilter()">RESET</button>
+  </div>
+</div>
+<!-- END -  Advanced Fields Header - END -->
+
+<!-- START - Advanced Fields Modal - START -->
+<div *ngIf="screenName == 'app'" class="modal fade" id="advanced-fields" tabindex="-1" role="dialog" aria-labelledby="advancedFieldsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="advancedFieldsLabel">Set Global Filters</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="close advanced fields modal">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <div class="modal-filters-top">
+                  <div class="inputs-wrap">
+                      <div class="input-row">
+                          <div class="input-wrap selected-anim with-val">
+                              <kendo-dropdownlist name="modal-time-range" id="modal-time-range" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns"
+                                    [(ngModel)]="globalsService.GlobalFilter.TimeRange" 
+                                    [data]="globalsService.GlobalFilter.TimeRangeValues">
+                                </kendo-dropdownlist><!--[textField]="timeRange" [valueField]="timeRange" -->
+                              <label for="modal-time-range">Time Range</label>
+                          </div>
+                          <div class="input-wrap">
+                              <input type="date" required="required" class="supply-date from filter-input" id="modal-from-date" name="modal-from-date"
+                                  placeholder="From Date" [disabled]="globalsService.GlobalFilter.TimeRange != 'Date Range'" [(ngModel)]="globalsService.GlobalFilter.FromDate">
+                              <label for="modal-from-date">From Date</label>
+                          </div>
+                          <div class="input-wrap">
+                              <input [(ngModel)]="globalsService.GlobalFilter.ToDate" type="date" required="required" class="supply-date until filter-input" 
+                              [disabled]="globalsService.GlobalFilter.TimeRange != 'Date Range'" id="modal-until-date" name="modal-until-date"
+                                  placeholder="Until Date">
+                              <label for="modal-until-date">Until Date</label>
+                          </div>
+                      </div>
+                      <div class="input-row">
+                          <div class="input-wrap selected-anim with-val">
+                            <kendo-dropdownlist name="modal-application-name" id="modal-application-name" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns" 
+                                [defaultItem]="{Code: 0, ApplicationName: 'All'}"
+                                [popupSettings]="{ width: 400 }"
+                                [(ngModel)]="globalsService.GlobalFilter.ApplicationCode" 
+                                [data]="globalsService.findGlobalSetting('FullApplicationsList',[])" 
+                                [textField]="'Name'" 
+                                [valueField]="'Code'"
+                                [valuePrimitive]="true">
+                            </kendo-dropdownlist>
+                            <label for="modal-application-name">Application Name</label>
+                          </div>
+                          <div class="input-wrap selected-anim with-val">
+                            <kendo-dropdownlist name="modal-user" id="modal-user" class="filter-input ng-pristine ng-valid ng-touched kendo-dropdowns" 
+                                [defaultItem]="{Code: 0, UserName: 'All'}"
+                                [(ngModel)]="globalsService.GlobalFilter.UserCode" 
+                                [data]="globalsService.findGlobalSetting('UsersList',[])" 
+                                [textField]="'UserName'" 
+                                [valueField]="'Code'"
+                                [valuePrimitive]="true">
+                            </kendo-dropdownlist>
+                            <label for="modal-user">User</label>
+                          </div>
+                          <div class="input-wrap">
+                              <label for="modal-free-text">Free Text</label>
+                              <input type="text" class="free-text filter-input" id="modal-free-text" name="modal-free-text" [(ngModel)]="globalsService.GlobalFilter.FreeText">
+                          </div>
+                      </div>
+                  </div>
+                  <!-- filter tab selection, built off radio buttons. implemented again in modal 
+                        * the default radio is hidden and overriden by custome elements and styling -->
+                  <div class="filter-tabs-wrap">
+                      <ul class="nav nav-pills filter-tabs filter-tabs-modal" id="modal-pills-tab" role="tablist">
+                          <li class="nav-item">
+                              <input type="radio" id="modal-all-tabs" name="pills-modal" [checked]="globalsService.GlobalFilter.ApplicationType == 'All'" (change)="globalsService.GlobalFilter.ChangeApplicationType('All')">
+                              <label for="modal-all-tabs" class="nav-link"><img src="./assets/images/all-tab.svg"
+                                      alt="">All
+                              </label>
+                          </li>
+                          <li class="nav-item">
+                              <input type="radio" id="modal-service-tab" name="pills-modal" [checked]="globalsService.GlobalFilter.ApplicationType == 'Service'" (change)="globalsService.GlobalFilter.ChangeApplicationType('Service')">
+                              <label for="modal-service-tab" class="nav-link"><img src="./assets/images/service-tab.svg"
+                                      alt=""> Service</label>
+                          </li>
+                          <li class="nav-item">
+                              <input type="radio" id="modal-task-tab" name="pills-modal" [checked]="globalsService.GlobalFilter.ApplicationType == 'Task'" (change)="globalsService.GlobalFilter.ChangeApplicationType('Task')">
+                              <label for="modal-task-tab" class="nav-link"><img class="task-tab-icon"
+                                      src="./assets/images/task-tab.svg" alt=""> Task
+                              </label>
+                          </li>
+                          <li class="nav-item">
+                              <input type="radio" id="modal-application-tab" name="pills-modal" [checked]="globalsService.GlobalFilter.ApplicationType == 'Application'" (change)="globalsService.GlobalFilter.ChangeApplicationType('Application')">
+                              <label for="modal-application-tab" class="nav-link"><img
+                                      src="./assets/images/application-tab.svg" alt=""> Application</label>
+                          </li>
+                      </ul>
+                      <div class="checkbox-input custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="cb-favorites-only" aria-label="Checkbox for showing favorites only">
+                          <label class="custom-control-label" for="cb-favorites-only">Show
+                              Favorites Only</label>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-filters-bottom">
+                  <div class="input-row">
+                      <div class="input-wrap">
+                          <label for="framework-version">Framework Version</label>
+                          <select class="filter-input" id="framework-version" name="">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                      <div class="input-wrap">
+                          <label for="application-category">Application Category</label>
+                          <select class="filter-input" id="application-category">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                      <div class="input-wrap">
+                          <label for="application-category">Application Version</label>
+                          <select class="filter-input" id="application-version">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="input-row">
+                      <div class="input-wrap">
+                          <label for="log-entry-source">Log Entry Source</label>
+                          <select class="filter-input" id="log-entry-source">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                      <div class="input-wrap">
+                          <label for="log-entry-level">Log Entry Level</label>
+                          <select class="filter-input" id="log-entry-level">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                      <div class="input-wrap checkbox-input custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" name="" id="cb-errors-only">
+                          <label class="custom-control-label" aria-label="Checkbox for showing applications with errors only" for="cb-errors-only">Show
+                              Applications With Errors Only</label>
+                      </div>
+                  </div>
+                  <div class="input-row">
+                      <div class="input-wrap">
+                          <label for="department">Department</label>
+                          <select class="filter-input" name="" id="department">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                      <div class="input-wrap">
+                          <label for="division">Division</label>
+                          <select class="filter-input" id="division">
+                              <option></option>
+                              <option value="1">10</option>
+                              <option value="2">20</option>
+                              <option value="3">30</option>
+                          </select>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="modal-footer-btn reset-btn" data-dismiss="modal" title="reset settings" (click)="resetFilter()">RESET</button>
+              <button type="button" class="modal-footer-btn apply-btn" data-dismiss="modal" title="apply settings" (click)="applyFilter()">APPLY</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- END -  Advanced Fields Modal - END -->
+
+
+
